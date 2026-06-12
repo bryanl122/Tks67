@@ -1,0 +1,578 @@
+# Container Park Tycoon — table de langue FRANÇAISE (source officielle)
+# Format : clé=valeur. {0},{1}… = paramètres. \n = retour à la ligne.
+
+# --- Interface générale ---
+ui.date_fmt={0} {1}, an {2}
+ui.years=ans
+ui.dashboard=Tableau de bord
+ui.build=Construction
+ui.staff=Personnel
+ui.equipment=Équipements
+ui.research=Recherche
+ui.economy=Économie
+ui.missions=Missions
+ui.stats=Statistiques
+ui.sites=Mes parcs
+ui.shop=Boutique
+ui.settings=Paramètres
+ui.open=Ouvert
+ui.closed=Fermé
+ui.reputation=Réputation
+ui.money=Trésorerie
+
+# --- Mois ---
+month.1=janvier
+month.2=février
+month.3=mars
+month.4=avril
+month.5=mai
+month.6=juin
+month.7=juillet
+month.8=août
+month.9=septembre
+month.10=octobre
+month.11=novembre
+month.12=décembre
+
+# --- Météo ---
+weather.soleil=☀ Soleil
+weather.nuageux=⛅ Nuageux
+weather.pluie=🌧 Pluie
+weather.neige=❄ Neige
+weather.brouillard=🌫 Brouillard
+weather.tempete=⛈ Tempête
+
+# --- Modes de jeu ---
+mode.0=Carrière
+mode.1=Sandbox
+mode.2=Défi
+mode.3=Coopératif
+
+# --- Sauvegardes ---
+save.empty_slot=Emplacement libre
+save.corrupt=Sauvegarde illisible
+save.day=Jour {0}
+save.failed=Échec de la sauvegarde
+save.done=Partie sauvegardée
+
+# --- Menu principal ---
+menu.tagline=Du petit recypark à l'empire national du recyclage
+menu.profiles=Profils de sauvegarde
+menu.slot=Profil {0}
+menu.continue=Continuer la partie
+menu.delete_save=Supprimer cette sauvegarde
+menu.career_desc=l'histoire complète, de Wavre au sommet
+menu.sandbox_desc=ressources illimitées, tout est débloqué
+menu.next_challenge=⟳ Changer de défi
+menu.coop_desc=gérez un parc à plusieurs (hôte)
+menu.credits=Crédits
+menu.credits_body=Un jeu de Recypark Studios.\nConception, code, art, audio : équipe CPT.\nInspiré des recyparks de Belgique.
+menu.quit=Quitter
+
+# --- Économie ---
+eco.loan_received=Emprunt reçu
+eco.salaries=Salaires
+eco.upkeep=Entretien du parc
+eco.insurance=Assurance
+eco.loan_payment=Mensualité d'emprunt
+eco.taxes=Impôts et taxes
+eco.subsidy=Subvention régionale
+eco.subsidy_body=La Région salue votre gestion : {0} versés.
+eco.bankruptcy_warning=Risque de faillite !
+eco.bankruptcy_body=Votre découvert dépasse 50 000 €. Redressez les comptes !
+eco.materials_sold=Vente de matériaux
+eco.processing_cost=Coût de traitement
+eco.drop_fees=Tarifs de dépôt
+eco.overview=Vue d'ensemble
+eco.month_income=Revenus du mois
+eco.month_expense=Dépenses du mois
+eco.last_month=Résultat du mois dernier
+eco.subsidies=Subventions reçues (total)
+eco.loans=Emprunts
+eco.loan_line=Reste {0} mois · {1}/mois
+eco.loan_offer=Emprunter {0} (24 mois)
+eco.borrow=Emprunter
+eco.insurance_tier0=Aucune assurance (risque maximal)
+eco.insurance_tier1=Assurance de base — 800 €/mois par parc
+eco.insurance_tier2=Assurance complète — 1 600 €/mois par parc, dégâts couverts à 80 %
+eco.choose=Choisir
+eco.ledger=Journal comptable
+
+# --- Contrats ---
+contract.expired=Contrat expiré
+contract.new_offer=Nouvelle offre de contrat !
+contract.signed=Contrat signé
+contract.active=Contrats actifs
+contract.offers=Offres de contrats
+contract.spot=spot : {0} €/t
+contract.sign=Signer
+contract.days_left=encore {0} j
+
+# --- Recherche ---
+research.cost_label=Recherche & développement
+research.started=Recherche lancée
+research.completed=Recherche terminée !
+research.in_progress=Recherche en cours
+research.days_left=encore {0} jours
+research.start=Lancer
+branch.automatisation=Automatisation
+branch.ia=Intelligence artificielle
+branch.robotique=Robotique
+branch.energie=Énergie verte
+branch.logistique=Logistique
+branch.securite=Sécurité
+branch.productivite=Productivité
+research.convoyeurs=Convoyeurs à bande
+research.pesage_auto=Pesage automatique
+research.barrieres_auto=Barrières automatiques
+research.tri_optique=Tri optique
+research.ia_flux=IA de gestion des flux
+research.ia_maintenance=Maintenance prédictive
+research.ia_tarification=Tarification intelligente
+research.exosquelettes=Exosquelettes de manutention
+research.robotique=Bras robotisés
+research.drones_inventaire=Drones d'inventaire
+research.panneaux_solaires=Panneaux solaires
+research.eolienne=Éolienne de site
+research.biomethanisation=Biométhanisation
+research.recup_eau=Récupération d'eau de pluie
+research.optim_tournees=Optimisation des tournées
+research.stock_intelligent=Stockage intelligent
+research.hub_regional=Hub logistique régional
+research.videosurveillance=Vidéosurveillance
+research.detection_incendie=Détection incendie
+research.normes_iso=Certification ISO 14001
+research.formation_continue=Formation continue
+research.ergonomie=Postes ergonomiques
+research.labo_recherche=Laboratoire de recherche
+
+# --- Personnel ---
+staff.hired=Embauche
+staff.severance=Indemnité de licenciement
+staff.strike=Grève !
+staff.team=Équipe ({0})
+staff.on_strike=EN GRÈVE
+staff.line=Compétence {0} · Moral {1} · Fatigue {2} · {3} €/mois
+staff.raise=Augmenter (+8 %)
+staff.fire=Licencier
+staff.candidates=Candidatures
+staff.candidate_line=Compétence {0} · Prétention : {1} €/mois
+staff.hire=Embaucher
+role.agent_tri=Agent de tri
+role.chauffeur=Chauffeur
+role.mecanicien=Mécanicien
+role.securite=Agent de sécurité
+role.responsable=Responsable de site
+role.technicien=Technicien R&D
+
+# --- Équipements ---
+equip.bought=Équipement acheté
+equip.upgrade=Améliorer
+equip.repair=Réparer
+equip.breakdown=Panne de machine !
+equip.owned=Parc de machines
+equip.broken=EN PANNE
+equip.condition=État : {0} %
+equip.level=Niveau {0}
+equip.catalog=Catalogue
+equip.buy=Acheter
+mach.compacteur=Compacteur à déchets
+mach.broyeur_bois=Broyeur à bois
+mach.broyeur_verts=Broyeur de déchets verts
+mach.presse_balles=Presse à balles
+mach.chargeuse=Chargeuse sur pneus
+mach.chariot_elevateur=Chariot élévateur
+mach.camion_benne=Camion porte-benne
+mach.camion_grue=Camion-grue
+mach.vehicule_entretien=Véhicule d'entretien
+mach.tri_optique=Trieuse optique
+mach.bras_robotise=Bras robotisé de tri
+mach.chargeuse_or=Chargeuse dorée (premium)
+mach.camion_eco_premium=Camion écologique premium
+
+# --- Construction ---
+build.completed=Construction terminée
+build.cannot_afford=Fonds insuffisants ou emplacement invalide
+build.hint=Choisissez un élément puis cliquez sur le terrain pour le placer. Maj = placement en série, clic droit = annuler.
+build.days={0} j de chantier
+build.place=Placer
+build.demolish_title=Démolir
+build.demolish=Démolir
+buildcat.conteneur=Conteneurs
+buildcat.infrastructure=Infrastructure
+buildcat.batiment=Bâtiments
+buildcat.securite=Sécurité
+buildcat.decoration=Décorations
+bld.cont_carton=Conteneur cartons
+bld.cont_papier=Conteneur papiers
+bld.cont_pmc=Conteneur PMC
+bld.cont_plastiques=Conteneur plastiques durs
+bld.cont_verre=Conteneur verre
+bld.cont_bois=Conteneur bois
+bld.cont_metaux=Conteneur métaux
+bld.cont_verts=Conteneur déchets verts
+bld.cont_gravats=Conteneur gravats
+bld.cont_electromenager=Conteneur électroménager
+bld.cont_batteries=Armoire à batteries
+bld.cont_pneus=Conteneur pneus
+bld.cont_textiles=Bulle à textiles
+bld.cont_dangereux=Zone déchets dangereux
+bld.cont_deee=Conteneur électronique (DEEE)
+bld.cont_encombrants=Conteneur encombrants
+bld.route=Route interne
+bld.parking=Parking
+bld.cloture=Clôture
+bld.lampadaire=Lampadaire
+bld.aire_chargement=Aire de chargement
+bld.zone_stockage=Zone de stockage
+bld.bureau=Bureau d'accueil
+bld.entrepot=Entrepôt
+bld.hangar=Hangar
+bld.atelier=Atelier mécanique
+bld.salle_repos=Salle de repos
+bld.poste_securite=Poste de sécurité
+bld.camera=Caméra de surveillance
+bld.borne_incendie=Borne incendie
+bld.arbre=Arbre
+bld.haie=Haie
+bld.parterre=Parterre fleuri
+bld.fontaine_eco=Fontaine écologique (premium)
+bld.statue_recyclage=Statue du recyclage (premium)
+
+# --- Flux de déchets ---
+stream.carton=Cartons
+stream.papier=Papiers
+stream.pmc=PMC
+stream.plastiques=Plastiques durs
+stream.verre=Verre
+stream.bois=Bois
+stream.metaux=Métaux
+stream.verts=Déchets verts
+stream.gravats=Gravats
+stream.electromenager=Électroménager
+stream.batteries=Batteries et piles
+stream.pneus=Pneus
+stream.textiles=Textiles
+stream.dangereux=Déchets dangereux
+stream.deee=Électronique (DEEE)
+stream.encombrants=Encombrants
+
+# --- Incidents ---
+incident.power_outage=Panne électrique générale
+incident.power_outage_body=Le parc tourne au ralenti jusqu'au rétablissement du courant.
+incident.power_back=Courant rétabli
+incident.fine=Amende environnementale
+incident.inspection_failed=Contrôle raté !
+incident.inspection_failed_body=L'inspecteur Mertens a constaté une pollution excessive. Amende : {0}.
+incident.inspection_passed=Contrôle réussi
+incident.inspection_passed_body=L'inspecteur Mertens repart satisfait. Réputation en hausse.
+incident.pollution=Pollution accidentelle !
+incident.pollution_body=Une fuite a contaminé le sol. Nettoyez et investissez en prévention.
+incident.accident=Accident du travail
+incident.storm_damage=Dégâts de tempête
+incident.storm=Tempête sur le parc !
+incident.storm_body=La tempête a endommagé vos installations. Coût : {0}.
+incident.fire=Incendie !
+incident.fire_body=Un conteneur a pris feu. Sécurité et bornes incendie accélèrent l'extinction.
+incident.fire_out=Incendie maîtrisé
+
+# --- Multi-sites ---
+site.purchase=Achat d'un nouveau parc
+site.purchased=Nouveau parc acquis !
+site.network=Réseau national ({0} parcs)
+site.current=Parc actuel
+site.manage=Gérer
+site.expand=Expansion
+site.expand_body=Ouvrir un nouveau recypark dans la province suivante : {0}
+site.buy=Acheter
+site.network_bonus=Bonus de réseau (valeur matériaux)
+coop.title=Mode coopératif
+coop.body=Gérez ce parc à plusieurs : l'hôte fait autorité sur la simulation, les invités envoient leurs actions. Connexion via Steam en production, session locale en développement.
+coop.host_label=Héberger une session coopérative
+coop.host=Héberger
+
+# --- Missions ---
+mission.reward=Récompense de mission
+mission.completed_body=Récompense : {0} + {1} EcoGems
+mission.career_complete=Carrière terminée !
+mission.career_complete_body=Vous avez bâti l'empire national du recyclage. TriTop Group s'incline. Bravo !
+mission.current=Mission en cours
+mission.all_done=Toutes les missions sont terminées !
+mission.none_mode=Pas de missions dans ce mode.
+mission.m01_premier_conteneur=Installer 3 conteneurs
+mission.m02_premiers_visiteurs=Accueillir 25 visiteurs
+mission.m03_embauche=Embaucher 2 employés
+mission.m04_premiere_tonne=Recycler 5 tonnes
+mission.m05_six_flux=Couvrir 6 flux de collecte
+mission.m06_premier_contrat=Signer un premier contrat
+mission.m07_cent_visiteurs=Accueillir 100 visiteurs
+mission.m08_premiere_machine=Acheter une première machine
+mission.m09_recherche=Terminer une recherche
+mission.m10_cinquante_tonnes=Recycler 50 tonnes
+mission.m11_equipe=Constituer une équipe de 6 employés
+mission.m12_reputation_60=Atteindre 60 de réputation globale
+mission.m13_dix_flux=Couvrir 10 flux de collecte
+mission.m14_tresorerie=Constituer 100 000 € de trésorerie
+mission.m15_cinq_recherches=Terminer 5 recherches
+mission.m16_mille_visiteurs=Accueillir 1 000 visiteurs
+mission.m17_satisfaction_80=Atteindre 80 de satisfaction moyenne
+mission.m18_deux_cents_tonnes=Recycler 200 tonnes
+mission.m19_seize_flux=Couvrir les 16 flux de collecte
+mission.m20_deuxieme_site=Ouvrir un deuxième parc
+mission.m21_reputation_80=Atteindre 80 de réputation globale
+mission.m22_mille_tonnes=Recycler 1 000 tonnes
+mission.m23_cinq_sites=Exploiter 5 parcs
+mission.m24_empire_national=Exploiter 8 parcs : l'empire national
+
+# --- Défis ---
+challenge.won=Défi relevé !
+challenge.lost=Défi échoué (délai dépassé)
+challenge.defi_dettes=Endetté : partez de 5 000 € et atteignez 50 000 € en 90 jours
+challenge.defi_express=Express : recyclez 100 tonnes en 60 jours
+challenge.defi_popularite=Popularité : 75 de réputation en 120 jours
+challenge.defi_canicule=Affluence : 500 visiteurs en 90 jours
+challenge.defi_national=National : 4 parcs en un an
+
+# --- Courriels narratifs ---
+mail.inbox=Boîte de réception
+mail.empty=Aucun message.
+mail.bienvenue.subject=Bienvenue chez toi
+mail.bienvenue.body=Mon grand, te voilà patron du recypark de Wavre ! Ton oncle serait fier. Commence simple : des conteneurs, du personnel, et garde le site propre. Je passe te voir bientôt. — Tante Monique
+mail.conseil_monique.subject=Un conseil qui vaut de l'or
+mail.conseil_monique.body=Les métaux et le PMC rapportent bien. Et signe des contrats dès que possible : un prix garanti, ça change tout. Bisous. — Monique
+mail.premier_controle.subject=Avis de contrôle
+mail.premier_controle.body=Monsieur, je passerai inspecter votre site prochainement. Tenez la pollution sous contrôle et vos registres à jour. — K. Mertens, Région wallonne
+mail.offre_tritop.subject=Une offre généreuse
+mail.offre_tritop.body=Cher confrère, TriTop Group rachète votre petit parc au double de sa valeur. Réfléchissez vite : nos offres expirent. — Vince Delcourt, TriTop
+mail.article_gazette.subject=Article : le recypark renaît
+mail.article_gazette.body=La Gazette du Brabant prépare un article sur votre parc. Un site propre et des visiteurs heureux feraient une belle une. — Awa Diallo
+mail.subside_region.subject=Programme de subventions
+mail.subside_region.body=La Région wallonne soutient les parcs exemplaires : maintenez une bonne réputation administrative et touchez des subsides mensuels. — Direction de l'Environnement
+mail.tritop_menace.subject=Dernière offre
+mail.tritop_menace.body=Dix flux ? Joli. Mais TriTop ouvre un mégacentre à 5 km. Vendez maintenant ou disparaissez. — V. Delcourt
+mail.monique_fierte.subject=Deux parcs !
+mail.monique_fierte.body=Deux parcs ! Tu vas plus vite que ton oncle en son temps. N'oublie pas : chaque site mérite la même attention. — Monique
+mail.mertens_respect.subject=Mes félicitations
+mail.mertens_respect.body=En vingt ans de carrière, j'ai rarement vu une gestion aussi sérieuse. La Région vous cite en exemple. — K. Mertens
+mail.tritop_defaite.subject=TriTop se retire !
+mail.tritop_defaite.body=Exclusif : face à votre réseau national, TriTop Group abandonne le marché belge. La Gazette titre : « Le recyclage a un visage ». — Awa Diallo
+
+# --- Tutoriel ---
+tuto.title=Tutoriel — étape {0}/{1}
+tuto.next=Suivant
+tuto.step1=Bienvenue dans votre recypark ! Déplacez la caméra (ZQSD/flèches), zoomez à la molette. Le temps s'écoule en haut : Espace pour mettre en pause.
+tuto.step2=Ouvrez le panneau Construction dans la barre du bas pour découvrir les conteneurs et bâtiments disponibles.
+tuto.step3=Placez un nouveau conteneur : choisissez un flux puis cliquez sur une zone libre du terrain.
+tuto.step4=Ouvrez le panneau Personnel et embauchez un agent de tri : il améliore le service et la valeur des matériaux.
+tuto.step5=Ouvrez le panneau Recherche : chaque technologie améliore durablement votre parc.
+tuto.step6=Ouvrez le panneau Économie : surveillez revenus, dépenses, contrats et emprunts.
+tuto.step7=Les visiteurs déposent leurs déchets ; vos camions vident les conteneurs chaque jour et vendent les matériaux. Gardez les conteneurs disponibles !
+tuto.step8=Suivez vos missions pour progresser et gagner des récompenses. Bonne gestion, et visez l'empire national !
+tuto.done=Tutoriel terminé !
+tuto.done_body=Vous recevez 20 EcoGems. À vous de jouer !
+
+# --- Visiteurs ---
+visitor.type0=Particulier
+visitor.type1=Indépendant
+visitor.type2=Entreprise
+visitor.visits=Visite n°{0}
+npc.1=Enfin un parc où on ne fait pas la file des heures !
+npc.2=Je viens chaque samedi, c'est devenu une habitude.
+npc.3=Vous acceptez les vieilles batteries ? Formidable.
+npc.4=C'est plus propre qu'avant, ça fait plaisir.
+npc.5=Mon coffre est plein de gravats, où je peux décharger ?
+npc.6=Les enfants adorent regarder la chargeuse.
+npc.7=Chez TriTop, c'était payant ET sale. Ici, c'est mieux.
+npc.8=Un café au bureau d'accueil, ce serait le luxe !
+npc.9=Je trie depuis trente ans, jeune homme.
+npc.10=Vous devriez mettre plus de panneaux indicateurs.
+npc.11=Bravo pour les panneaux solaires, on voit ça d'en haut de la rue.
+npc.12=La planète vous dit merci, moi aussi.
+
+# --- Tableau de bord ---
+dash.visitors_today=Visiteurs aujourd'hui
+dash.visitors_now=Visiteurs sur site
+dash.satisfaction=Satisfaction moyenne
+dash.pollution=Pollution du sol
+dash.containers=Conteneurs opérationnels
+dash.staff=Employés
+dash.reputation=Réputation
+dash.containers_state=État des conteneurs
+dash.on_fire=🔥 EN FEU
+dash.under_construction=En chantier
+dash.recent_visitors=Derniers visiteurs
+rep.citizens=Citoyens
+rep.companies=Entreprises
+rep.government=Administrations
+
+# --- Statistiques ---
+stats.title=Statistiques globales
+stats.tons=Tonnes recyclées
+stats.co2=Pollution évitée
+stats.visitors=Visiteurs accueillis
+stats.income=Revenus cumulés
+stats.profit=Bénéfice net
+stats.satisfaction=Satisfaction moyenne
+stats.incidents=Incidents subis
+stats.best_day=Meilleure journée
+stats.leaderboards=Classements mondiaux
+lb.tons=Tonnes recyclées
+lb.profit=Bénéfices
+lb.satisfaction=Satisfaction
+
+# --- Succès ---
+ach.unlocked_body=Succès débloqué ! +{0} EcoGems
+ach.title_unlocked=Titre débloqué : {0}
+ach.title_panel=Succès ({0}/{1})
+ach.recycleur=Recycleur
+ach.accueil=Hôte du parc
+ach.fortune=Fortune verte
+ach.batisseur=Bâtisseur
+ach.employeur=Employeur
+ach.savant=Savant
+ach.negociateur=Négociateur
+ach.ecolo=Écolo
+ach.logisticien=Logisticien
+ach.expansion=Expansion
+ach.mecano=Mécano
+ach.survivant=Survivant
+ach.populaire=Populaire
+ach.assidu=Assidu
+ach.premier_jour=Premier jour
+ach.premiere_vente=Première vente
+ach.nuit_blanche=Nuit blanche
+ach.collection_flux=Collection complète
+ach.zero_dechet=Zéro déchet
+ach.semaine_parfaite=Semaine parfaite
+ach.pompier=Pompier d'un jour
+ach.inspecteur_content=Chouchou de l'inspecteur
+ach.greve_evitee=Médiateur social
+ach.millionnaire=Millionnaire
+ach.decorateur=Décorateur
+ach.technophile=Technophile
+ach.omniscient=Omniscient
+ach.carriere_finie=Légende du recyclage
+ach.defi_releve=Défi relevé
+ach.maitre_defis=Maître des défis
+title.maitre_recycleur=Maître Recycleur
+title.ami_des_citoyens=Ami des Citoyens
+title.magnat=Magnat du Tri
+title.architecte=Architecte
+title.grand_patron=Grand Patron
+title.visionnaire=Visionnaire
+title.negociateur_or=Négociateur d'Or
+title.gardien_planete=Gardien de la Planète
+title.roi_logistique=Roi de la Logistique
+title.empereur_national=Empereur National
+title.chef_atelier=Chef d'Atelier
+title.imperturbable=Imperturbable
+title.star_locale=Star Locale
+title.veteran=Vétéran
+title.collectionneur=Collectionneur
+title.millionnaire=Millionnaire
+title.omniscient=Omniscient
+title.legende_recypark=Légende des Recyparks
+title.maitre_defis=Maître des Défis
+
+# --- Boutique ---
+shop.gems_title=Vos EcoGems : {0}
+shop.gems_received=+{0} EcoGems reçus !
+shop.bonus=bonus
+shop.pack_label=Pack de ressources
+shop.purchased=Achat effectué
+shop.not_enough_gems=EcoGems insuffisants
+shop.daily_offer=Offre du jour (personnalisée)
+shopcat.vehicule=Véhicules premium
+shopcat.decoration=Décorations premium
+shopcat.skin=Skins premium
+shopcat.ressources=Packs de ressources
+shopcat.demarrage=Packs de démarrage
+shopcat.extension=Extensions
+shopcat.accelerateur=Accélérateurs
+shopitem.chargeuse_or=Chargeuse dorée
+shopitem.chargeuse_or.desc=Chargeuse premium : +50 % de vidange, pannes quasi nulles.
+shopitem.camion_eco_premium=Camion écologique premium
+shopitem.camion_eco_premium.desc=Le fleuron : +60 % de vidange, silencieux et propre.
+shopitem.fontaine_eco=Fontaine écologique
+shopitem.fontaine_eco.desc=Décoration exclusive qui enchante les visiteurs.
+shopitem.statue_recyclage=Statue du recyclage
+shopitem.statue_recyclage.desc=Monument premium à la gloire du tri.
+shopitem.skin_conteneurs_neon=Skin conteneurs Néon
+shopitem.skin_conteneurs_neon.desc=Des conteneurs flamboyants visibles de nuit.
+shopitem.skin_conteneurs_bois=Skin conteneurs Bois
+shopitem.skin_conteneurs_bois.desc=Une finition naturelle et chaleureuse.
+shopitem.skin_conteneurs_chrome=Skin conteneurs Chrome
+shopitem.skin_conteneurs_chrome.desc=L'élégance industrielle absolue.
+shopitem.pack_argent_s=Petit pack d'argent
+shopitem.pack_argent_s.desc=+10 000 € immédiats.
+shopitem.pack_argent_m=Pack d'argent moyen
+shopitem.pack_argent_m.desc=+50 000 € immédiats.
+shopitem.pack_argent_l=Grand pack d'argent
+shopitem.pack_argent_l.desc=+100 000 € immédiats.
+shopitem.pack_demarrage=Pack de démarrage
+shopitem.pack_demarrage.desc=+20 000 € et un chariot élévateur offert. Offre unique.
+shopitem.pack_expansion=Pack expansion
+shopitem.pack_expansion.desc=+60 000 € pour accélérer votre deuxième parc. Offre unique.
+shopitem.ext_terrain=Extension de terrain
+shopitem.ext_terrain.desc=Agrandit définitivement le terrain du parc actif.
+shopitem.ext_defis=Pack de défis bonus
+shopitem.ext_defis.desc=Défis supplémentaires pour les stratèges.
+shopitem.boost_construction=Construction instantanée
+shopitem.boost_construction.desc=Tous les chantiers en cours se terminent immédiatement.
+shopitem.boost_reparation=Réparation instantanée
+shopitem.boost_reparation.desc=Toutes les machines en panne sont réparées.
+shopitem.boost_recherche=Recherche instantanée
+shopitem.boost_recherche.desc=La recherche en cours se termine immédiatement.
+shopitem.boost_formation=Formation instantanée
+shopitem.boost_formation.desc=+10 compétence et +50 XP pour tout le personnel.
+
+# --- Battle Pass ---
+bp.title=Battle Pass — Saison {0}
+bp.days_left={0} jours restants
+bp.tier=Palier {0}/{1}
+bp.tier_label=Palier {0}
+bp.tier_up=Palier {0} atteint !
+bp.claim=Réclamer
+bp.claim_hint=Ouvrez la boutique pour réclamer vos récompenses.
+bp.reward_label=Récompense Battle Pass
+bp.premium_offer=Débloquer la piste Premium (récompenses doublées + exclusivités)
+bp.premium_bought=Battle Pass Premium activé !
+bp.premium_bought_body=Toutes les récompenses premium de la saison sont désormais accessibles.
+bp.new_season=Nouvelle saison {0} !
+bp.new_season_body=60 nouveaux jours, 50 nouveaux paliers de récompenses.
+
+# --- VIP ---
+vip.title=Abonnement VIP
+vip.active=VIP actif — {0} jours restants
+vip.perks=Avantages VIP :\n• {0} EcoGems offerts chaque jour\n• -{1} % sur toute la boutique\n• +{2} % de progression Battle Pass\n• Objets exclusifs au fil des saisons
+vip.subscribe=Devenir VIP
+vip.extend=Prolonger le VIP (+30 jours)
+vip.month=mois
+vip.activated=Bienvenue au club VIP !
+vip.activated_body=Vos avantages sont actifs immédiatement.
+vip.daily_gems=Bonus VIP quotidien : +{0} EcoGems
+
+# --- Récompenses quotidiennes ---
+daily.reward_label=Récompense quotidienne
+daily.title=Connexion quotidienne — série de {0} !
+daily.body=Jour {0} du calendrier : {1} + {2} EcoGems
+daily.monthly_bonus=🎁 Bonus mensuel : coffre du 28e jour !
+daily.calendar=Calendrier de connexion (série : {0})
+daily.day=Jour {0}
+
+# --- Événements commerciaux ---
+event.noel=Marché de Noël
+event.nouvel_an=Cap sur la nouvelle année
+event.black_friday=Black Friday du tri
+event.anniversaire=Anniversaire du jeu
+
+# --- Paramètres ---
+settings.language=Langue
+settings.audio=Audio
+settings.music=Musique
+settings.sfx=Effets sonores
+settings.game=Partie
+settings.save_now=Sauvegarder la partie maintenant
+settings.save=Sauvegarder
+settings.quit_menu=Quitter vers le menu principal (sauvegarde automatique)
+settings.quit=Quitter

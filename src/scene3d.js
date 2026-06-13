@@ -85,17 +85,18 @@ export class Scene3D {
     grass.receiveShadow = true;
     this.scene.add(grass);
 
-    // Dalle bétonnée du parc
-    const concreteMat = new THREE.MeshStandardMaterial({ color: 0x8a8d92, roughness: 0.95 });
-    const slab = new THREE.Mesh(new THREE.BoxGeometry(GROUND, 0.4, GROUND), concreteMat);
-    slab.position.y = -0.2;
-    slab.receiveShadow = true;
-    this.scene.add(slab);
-    this.slab = slab;
+    // Dalle bétonnée du parc (épaisseur) + surface texturée
+    const slab = new THREE.Mesh(new THREE.BoxGeometry(GROUND, 0.4, GROUND), new THREE.MeshStandardMaterial({ color: 0x6f7378, roughness: 0.95 }));
+    slab.position.y = -0.2; slab.receiveShadow = true;
+    this.scene.add(slab); this.slab = slab;
+    const surface = new THREE.Mesh(new THREE.PlaneGeometry(GROUND, GROUND),
+      new THREE.MeshStandardMaterial({ map: this._concreteTexture(), roughness: 0.95, metalness: 0.02 }));
+    surface.rotation.x = -Math.PI / 2; surface.position.y = 0.011; surface.receiveShadow = true;
+    this.scene.add(surface);
 
-    // Marquage de la dalle (lignes claires)
+    // Grille de placement discrète
     const grid = new THREE.GridHelper(GROUND, GROUND / TILE, 0xffffff, 0xb8bcc2);
-    grid.material.opacity = 0.18; grid.material.transparent = true;
+    grid.material.opacity = 0.06; grid.material.transparent = true;
     grid.position.y = 0.02;
     this.scene.add(grid);
 
@@ -122,6 +123,14 @@ export class Scene3D {
     const booth = this._makeBuildingMesh('bureau');
     booth.position.set(-14, 0, GROUND / 2 - 6);
     this.scene.add(booth);
+
+    // Détails de site : plots le long de la voie, cônes, panneau d'accueil
+    for (let z = GROUND / 2 - 10; z < GROUND / 2 + 16; z += 4) {
+      for (const sx of [-1, 1]) { const b = this._makeBuildingMesh('bollard'); b.position.set(sx * 5.2, 0, z); this.scene.add(b); }
+    }
+    [['cone', -6, GROUND / 2 - 3], ['cone', 6, GROUND / 2 - 3], ['cone', -3, GROUND / 2 - 9], ['cone', 3, GROUND / 2 - 9]]
+      .forEach(([t, x, z]) => { const m = this._makeBuildingMesh(t); m.position.set(x, 0, z); this.scene.add(m); });
+    const sign = this._makeBuildingMesh('panneau'); sign.position.set(-12, 0, GROUND / 2 - 13); sign.rotation.y = 0.4; this.scene.add(sign);
   }
 
   _buildBarrier(x, z) {
@@ -219,23 +228,17 @@ export class Scene3D {
     // plancher
     const floor = new THREE.Mesh(new THREE.BoxGeometry(L, 0.16, W), dark);
     floor.position.y = FY; floor.receiveShadow = true; grp.add(floor);
-    // parois longues + courtes (toit ouvert)
+    // parois longues texturées (tôle ondulée + bande réfléchissante + nom + rouille)
+    const sideTex = this._skipTexture('#' + base.getHexString(), FRACTIONS[fraction] ? FRACTIONS[fraction].name : fraction);
+    const sideMat = new THREE.MeshStandardMaterial({ map: sideTex, metalness: 0.5, roughness: 0.55 });
     for (const sz of [-1, 1]) {
-      const s = new THREE.Mesh(new THREE.BoxGeometry(L, H, t), mat);
+      const s = new THREE.Mesh(new THREE.BoxGeometry(L, H, t), sideMat);
       s.position.set(0, FY + H / 2, sz * (W / 2 - t / 2)); s.castShadow = true; s.receiveShadow = true; grp.add(s);
     }
+    // parois courtes (acier peint uni)
     for (const sx of [-1, 1]) {
       const s = new THREE.Mesh(new THREE.BoxGeometry(t, H, W), mat);
       s.position.set(sx * (L / 2 - t / 2), FY + H / 2, 0); s.castShadow = true; grp.add(s);
-    }
-    // nervures verticales (tôle ondulée)
-    const ribN = Math.floor(L / 0.42);
-    for (let i = 0; i <= ribN; i++) {
-      const x = -L / 2 + 0.2 + i * (L - 0.4) / ribN;
-      for (const sz of [-1, 1]) {
-        const r = new THREE.Mesh(new THREE.BoxGeometry(0.07, H * 0.92, 0.06), dark);
-        r.position.set(x, FY + H / 2, sz * (W / 2)); grp.add(r);
-      }
     }
     // rebord supérieur (4 barres) — laisse le dessus ouvert
     for (const sz of [-1, 1]) { const r = new THREE.Mesh(new THREE.BoxGeometry(L + 0.12, 0.14, 0.16), black); r.position.set(0, FY + H, sz * (W / 2)); grp.add(r); }
@@ -246,6 +249,15 @@ export class Scene3D {
     // galets/roues arrière (-X) caractéristiques du roll-off
     const roller = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, W * 0.9, 12), black);
     roller.rotation.x = Math.PI / 2; roller.position.set(-L / 2 + 0.4, 0.26, 0); grp.add(roller);
+    // rambarde de sécurité le long du quai d'accès (+Z), comme en recyparc
+    const railMat = new THREE.MeshStandardMaterial({ color: 0xf4c20d, metalness: 0.3, roughness: 0.6 });
+    const rZ = W / 2 + 0.6;
+    const railTop = new THREE.Mesh(new THREE.BoxGeometry(L + 0.5, 0.1, 0.1), railMat); railTop.position.set(0, 1.05, rZ); railTop.castShadow = true; grp.add(railTop);
+    const railMid = new THREE.Mesh(new THREE.BoxGeometry(L + 0.5, 0.08, 0.08), railMat); railMid.position.set(0, 0.62, rZ); grp.add(railMid);
+    for (const px of [-1, -0.34, 0.34, 1]) {
+      const post = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.15, 0.1), railMat);
+      post.position.set(px * (L / 2 + 0.05), 0.55, rZ); post.castShadow = true; grp.add(post);
+    }
     // matière à l'intérieur (jauge de remplissage, visible par le dessus ouvert)
     const fill = new THREE.Mesh(new THREE.BoxGeometry(L - 0.4, 1, W - 0.4),
       new THREE.MeshStandardMaterial({ color: base.clone().multiplyScalar(0.85), roughness: 1, flatShading: true }));
@@ -340,6 +352,26 @@ export class Scene3D {
       }
       case 'cloture': {
         const m = new THREE.Mesh(new THREE.BoxGeometry(4, 2, 0.1), new THREE.MeshStandardMaterial({ color: 0x7a8088, metalness: 0.4 })); m.position.y = 1; grp.add(m); break;
+      }
+      case 'cone': {
+        const c = new THREE.Mesh(new THREE.ConeGeometry(0.42, 1.1, 16), new THREE.MeshStandardMaterial({ color: 0xff6a00, roughness: 0.5 })); c.position.y = 0.6; c.castShadow = true; grp.add(c);
+        const band = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.36, 0.18, 16), new THREE.MeshStandardMaterial({ color: 0xffffff })); band.position.y = 0.55; grp.add(band);
+        const baseP = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.08, 0.66), new THREE.MeshStandardMaterial({ color: 0xdd5500 })); baseP.position.y = 0.04; grp.add(baseP); break;
+      }
+      case 'bollard': {
+        const p = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.16, 1.0, 12), new THREE.MeshStandardMaterial({ color: 0xd11a1a, metalness: 0.3 })); p.position.y = 0.5; p.castShadow = true; grp.add(p);
+        const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.145, 0.145, 0.14, 12), new THREE.MeshStandardMaterial({ color: 0xffffff })); ring.position.y = 0.82; grp.add(ring); break;
+      }
+      case 'panneau': {
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.4, 8), wall(0x9aa0a6)); pole.position.y = 1.2; pole.castShadow = true; grp.add(pole);
+        const board = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.3, 0.08), new THREE.MeshStandardMaterial({ color: 0x1463c2 })); board.position.set(0, 2.2, 0); board.castShadow = true; grp.add(board);
+        const lbl = this._makeLabelSprite('TRI DES DÉCHETS'); lbl.position.set(0, 2.2, 0.1); lbl.scale.set(2.0, 0.5, 1); grp.add(lbl); break;
+      }
+      case 'rambarde': {
+        const m = new THREE.MeshStandardMaterial({ color: 0xf4c20d, metalness: 0.3, roughness: 0.6 });
+        const top = new THREE.Mesh(new THREE.BoxGeometry(4, 0.1, 0.1), m); top.position.y = 1.05; top.castShadow = true; grp.add(top);
+        const mid = new THREE.Mesh(new THREE.BoxGeometry(4, 0.08, 0.08), m); mid.position.y = 0.62; grp.add(mid);
+        for (const px of [-1, -0.33, 0.33, 1]) { const p = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.15, 0.1), m); p.position.set(px * 2, 0.55, 0); grp.add(p); } break;
       }
       default: {
         const b = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), wall(0x9aa0a6)); b.position.y = 1.5; grp.add(b);
@@ -584,6 +616,86 @@ export class Scene3D {
     grp.position.copy(pos);
     grp.userData.expire = performance.now() + 6000;
     this.scene.add(grp); this.smoke.push(grp);
+  }
+
+  // --- Textures procédurales (aucune image externe) --------------------------
+  // Tôle de benne : ondulations + bande réfléchissante + nom + rouille/usure.
+  _skipTexture(hex, name) {
+    this._skipTexCache = this._skipTexCache || {};
+    const key = hex + '|' + name;
+    if (this._skipTexCache[key]) return this._skipTexCache[key];
+    const cv = document.createElement('canvas'); cv.width = 600; cv.height = 250;
+    const ctx = cv.getContext('2d');
+    const base = new THREE.Color(hex).lerp(new THREE.Color('#173a22'), 0.2);
+    // fond
+    ctx.fillStyle = '#' + base.getHexString(); ctx.fillRect(0, 0, 600, 250);
+    // ondulations verticales (clair/sombre)
+    for (let x = 0; x < 600; x += 14) {
+      const g = ctx.createLinearGradient(x, 0, x + 14, 0);
+      g.addColorStop(0, 'rgba(255,255,255,0.10)'); g.addColorStop(0.5, 'rgba(0,0,0,0.0)'); g.addColorStop(1, 'rgba(0,0,0,0.22)');
+      ctx.fillStyle = g; ctx.fillRect(x, 0, 14, 250);
+    }
+    // rouille / coulures
+    for (let i = 0; i < 14; i++) {
+      const x = Math.random() * 600, w = 4 + Math.random() * 10, h = 30 + Math.random() * 120;
+      const g = ctx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, 'rgba(120,60,20,0.45)'); g.addColorStop(1, 'rgba(90,45,15,0)');
+      ctx.fillStyle = g; ctx.fillRect(x, Math.random() * 40, w, h);
+    }
+    // bande réfléchissante hachurée (haut)
+    ctx.save();
+    ctx.fillStyle = '#f4c20d'; ctx.fillRect(0, 18, 600, 30);
+    ctx.fillStyle = 'rgba(0,0,0,0.85)';
+    for (let x = -30; x < 600; x += 40) { ctx.beginPath(); ctx.moveTo(x, 18); ctx.lineTo(x + 18, 18); ctx.lineTo(x + 38, 48); ctx.lineTo(x + 20, 48); ctx.closePath(); ctx.fill(); }
+    ctx.restore();
+    // plaque + nom de la fraction
+    ctx.fillStyle = 'rgba(10,15,20,0.78)'; this._roundRect(ctx, 150, 95, 300, 70, 12); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 40px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('♻ ' + name.toUpperCase().slice(0, 14), 300, 132);
+    // rivets
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    for (let x = 14; x < 600; x += 28) { ctx.beginPath(); ctx.arc(x, 60, 2.2, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(x, 200, 2.2, 0, 7); ctx.fill(); }
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+    this._skipTexCache[key] = tex; return tex;
+  }
+
+  // Dalle béton : teinte, joints de dilatation, taches, fissures, marquages.
+  _concreteTexture() {
+    if (this._concreteTex) return this._concreteTex;
+    const cv = document.createElement('canvas'); cv.width = 1024; cv.height = 1024;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#8d9197'; ctx.fillRect(0, 0, 1024, 1024);
+    // grain
+    for (let i = 0; i < 26000; i++) {
+      const v = Math.random() * 40 - 20;
+      ctx.fillStyle = `rgba(${128 + v},${130 + v},${135 + v},0.25)`;
+      ctx.fillRect(Math.random() * 1024, Math.random() * 1024, 2, 2);
+    }
+    // taches d'huile
+    for (let i = 0; i < 10; i++) {
+      const x = Math.random() * 1024, y = Math.random() * 1024, r = 20 + Math.random() * 70;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, 'rgba(20,20,25,0.5)'); g.addColorStop(1, 'rgba(20,20,25,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+    }
+    // joints de dilatation
+    ctx.strokeStyle = 'rgba(40,42,46,0.7)'; ctx.lineWidth = 4;
+    for (let i = 0; i <= 1024; i += 256) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 1024); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(1024, i); ctx.stroke(); }
+    // fissures
+    ctx.strokeStyle = 'rgba(30,30,34,0.5)'; ctx.lineWidth = 1.5;
+    for (let i = 0; i < 8; i++) { ctx.beginPath(); let x = Math.random() * 1024, y = Math.random() * 1024; ctx.moveTo(x, y); for (let j = 0; j < 6; j++) { x += (Math.random() - 0.5) * 90; y += (Math.random() - 0.5) * 90; ctx.lineTo(x, y); } ctx.stroke(); }
+    // marquages au sol (flèche + lignes effacées)
+    ctx.strokeStyle = 'rgba(240,240,240,0.35)'; ctx.lineWidth = 10;
+    ctx.beginPath(); ctx.moveTo(512, 760); ctx.lineTo(512, 880); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(512, 760); ctx.lineTo(480, 800); ctx.moveTo(512, 760); ctx.lineTo(544, 800); ctx.stroke();
+    // bande blanche pointillée
+    ctx.fillStyle = 'rgba(240,240,240,0.25)';
+    for (let y = 100; y < 400; y += 60) ctx.fillRect(160, y, 12, 34);
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = THREE.SRGBColorSpace; tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(3, 3); tex.anisotropy = 4;
+    this._concreteTex = tex; return tex;
   }
 
   // --- Sprite texte (étiquette de conteneur) ---------------------------------

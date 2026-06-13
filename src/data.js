@@ -193,6 +193,10 @@ export const BUILDINGS = [
   { id: 'poste_secu',  name: 'Poste de sécurité',   cost: 14000, cat: 'batiment',  icon: '🛂', desc: 'Réduit les incidents.' },
   { id: 'arbre',       name: 'Arbre',               cost: 300,   cat: 'deco',      icon: '🌳', desc: '+réputation environnementale.' },
   { id: 'haie',        name: 'Haie',                cost: 180,   cat: 'deco',      icon: '🌿', desc: 'Décoration verte.' },
+  { id: 'cone',        name: 'Cône de signalisation',cost: 40,   cat: 'deco',      icon: '🔶', desc: 'Balise la circulation.' },
+  { id: 'bollard',     name: 'Plot / borne',        cost: 90,    cat: 'deco',      icon: '🟥', desc: 'Protège les zones piétonnes.' },
+  { id: 'panneau',     name: 'Panneau d\'info',     cost: 600,   cat: 'deco',      icon: '🪧', desc: 'Signalétique de tri.' },
+  { id: 'rambarde',    name: 'Rambarde de sécurité',cost: 350,   cat: 'voirie',    icon: '🛤', desc: 'Garde-corps le long des quais.' },
 ];
 
 // --- Boutique premium (EcoGems) ----------------------------------------------

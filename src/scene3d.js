@@ -205,26 +205,60 @@ export class Scene3D {
   // ===========================================================================
 
   // --- Conteneur (benne trapézoïdale) ----------------------------------------
+  // Benne roll-off (conteneur ampliroll) à toit ouvert, façon recyparc belge.
   _makeContainerMesh(fraction) {
     const grp = new THREE.Group();
-    const col = new THREE.Color((FRACTIONS[fraction] && FRACTIONS[fraction].color) || '#4caf50');
-    const mat = new THREE.MeshStandardMaterial({ color: col, metalness: 0.55, roughness: 0.55 });
-    // corps (légèrement évasé)
-    const body = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.0, 2.2, 4), mat);
-    body.rotation.y = Math.PI / 4; body.position.y = 1.1;
-    body.castShadow = true; body.receiveShadow = true;
-    grp.add(body);
-    // rebord
-    const rim = new THREE.Mesh(new THREE.TorusGeometry(2.5, 0.12, 6, 4), new THREE.MeshStandardMaterial({ color: 0x222222 }));
-    rim.rotation.x = Math.PI / 2; rim.rotation.z = Math.PI / 4; rim.position.y = 2.2; grp.add(rim);
-    // matière à l'intérieur (jauge de remplissage)
-    const fillMat = new THREE.MeshStandardMaterial({ color: col.clone().multiplyScalar(0.7), roughness: 1 });
-    const fill = new THREE.Mesh(new THREE.BoxGeometry(3.0, 1, 3.0), fillMat);
-    fill.position.y = 0.5; fill.scale.y = 0.02; grp.add(fill);
+    const base = new THREE.Color((FRACTIONS[fraction] && FRACTIONS[fraction].color) || '#2f6b3a');
+    // teinte « acier peint » (assombrie vers le vert industriel)
+    const steel = base.clone().lerp(new THREE.Color('#13351f'), 0.22);
+    const mat = new THREE.MeshStandardMaterial({ color: steel, metalness: 0.55, roughness: 0.5 });
+    const dark = new THREE.MeshStandardMaterial({ color: steel.clone().multiplyScalar(0.72), metalness: 0.55, roughness: 0.55 });
+    const black = new THREE.MeshStandardMaterial({ color: 0x141414, metalness: 0.5, roughness: 0.6 });
+
+    const L = 4.8, W = 2.4, H = 2.0, FY = 0.5, t = 0.12;
+    // plancher
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(L, 0.16, W), dark);
+    floor.position.y = FY; floor.receiveShadow = true; grp.add(floor);
+    // parois longues + courtes (toit ouvert)
+    for (const sz of [-1, 1]) {
+      const s = new THREE.Mesh(new THREE.BoxGeometry(L, H, t), mat);
+      s.position.set(0, FY + H / 2, sz * (W / 2 - t / 2)); s.castShadow = true; s.receiveShadow = true; grp.add(s);
+    }
+    for (const sx of [-1, 1]) {
+      const s = new THREE.Mesh(new THREE.BoxGeometry(t, H, W), mat);
+      s.position.set(sx * (L / 2 - t / 2), FY + H / 2, 0); s.castShadow = true; grp.add(s);
+    }
+    // nervures verticales (tôle ondulée)
+    const ribN = Math.floor(L / 0.42);
+    for (let i = 0; i <= ribN; i++) {
+      const x = -L / 2 + 0.2 + i * (L - 0.4) / ribN;
+      for (const sz of [-1, 1]) {
+        const r = new THREE.Mesh(new THREE.BoxGeometry(0.07, H * 0.92, 0.06), dark);
+        r.position.set(x, FY + H / 2, sz * (W / 2)); grp.add(r);
+      }
+    }
+    // rebord supérieur (4 barres) — laisse le dessus ouvert
+    for (const sz of [-1, 1]) { const r = new THREE.Mesh(new THREE.BoxGeometry(L + 0.12, 0.14, 0.16), black); r.position.set(0, FY + H, sz * (W / 2)); grp.add(r); }
+    for (const sx of [-1, 1]) { const r = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.14, W + 0.12), black); r.position.set(sx * (L / 2), FY + H, 0); grp.add(r); }
+    // barre + crochet d'ampliroll à l'avant (+X)
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(0.16, 1.3, 0.16), black); bar.position.set(L / 2 + 0.12, FY + H * 0.45, 0); grp.add(bar);
+    const hook = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.05, 6, 10, Math.PI), black); hook.rotation.x = Math.PI / 2; hook.position.set(L / 2 + 0.12, FY + H * 0.45 + 0.65, 0); grp.add(hook);
+    // galets/roues arrière (-X) caractéristiques du roll-off
+    const roller = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, W * 0.9, 12), black);
+    roller.rotation.x = Math.PI / 2; roller.position.set(-L / 2 + 0.4, 0.26, 0); grp.add(roller);
+    // matière à l'intérieur (jauge de remplissage, visible par le dessus ouvert)
+    const fill = new THREE.Mesh(new THREE.BoxGeometry(L - 0.4, 1, W - 0.4),
+      new THREE.MeshStandardMaterial({ color: base.clone().multiplyScalar(0.85), roughness: 1, flatShading: true }));
+    fill.position.y = FY + 0.1; fill.scale.y = 0.02; grp.add(fill);
     grp.userData.fill = fill;
-    // panneau d'identification
+    // bandeau d'identification (panneau réfléchissant) sur la paroi avant
     const label = this._makeLabelSprite(FRACTIONS[fraction] ? FRACTIONS[fraction].name : fraction);
-    label.position.set(0, 3.4, 0); grp.add(label);
+    label.position.set(0, FY + H + 0.7, 0); grp.add(label);
+    // gyrophare « plein » (clignote quand saturé)
+    const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 8),
+      new THREE.MeshStandardMaterial({ color: 0xff3b30, emissive: 0xff0000, emissiveIntensity: 0 }));
+    beacon.position.set(L / 2 - 0.3, FY + H + 0.16, W / 2 - 0.3); grp.add(beacon);
+    grp.userData.beacon = beacon;
     grp.userData.kind = 'container';
     return grp;
   }
@@ -244,10 +278,10 @@ export class Scene3D {
     if (!mesh) return;
     const ratio = Math.max(0, Math.min(1, container.fill / container.capacity));
     const fill = mesh.userData.fill;
-    fill.scale.y = Math.max(0.02, ratio * 1.6);
-    fill.position.y = 0.3 + fill.scale.y / 2;
-    // clignote en rouge si plein
-    if (ratio >= 0.98) mesh.userData.full = true; else mesh.userData.full = false;
+    fill.scale.y = Math.max(0.02, ratio * 1.8);
+    fill.position.y = 0.58 + fill.scale.y / 2;
+    // gyrophare « plein »
+    mesh.userData.full = ratio >= 0.98;
   }
 
   removeContainer(id) {
@@ -326,37 +360,108 @@ export class Scene3D {
   }
 
   // --- Véhicules visiteurs ----------------------------------------------------
+  // Véhicules procéduraux réalistes (berline, break, camionnette, camion, remorque).
+  // L'avant du véhicule pointe vers +Z (sens de marche).
   _makeVehicleMesh(v) {
     const grp = new THREE.Group();
     const col = new THREE.Color(v.color);
-    const bodyMat = new THREE.MeshStandardMaterial({ color: col, metalness: 0.5, roughness: 0.4 });
-    const cabH = v.h * 0.6;
-    // châssis
-    const body = new THREE.Mesh(new THREE.BoxGeometry(v.w, v.h * 0.55, v.l), bodyMat);
-    body.position.y = v.h * 0.45; body.castShadow = true; grp.add(body);
-    // cabine / toit
-    const cab = new THREE.Mesh(new THREE.BoxGeometry(v.w * 0.92, cabH, v.l * 0.45),
-      new THREE.MeshStandardMaterial({ color: col.clone().multiplyScalar(1.1), metalness: 0.3, roughness: 0.3 }));
-    cab.position.set(0, v.h * 0.45 + cabH / 2, v.l * 0.15); cab.castShadow = true; grp.add(cab);
-    // vitres
-    const glass = new THREE.Mesh(new THREE.BoxGeometry(v.w * 0.94, cabH * 0.7, v.l * 0.46),
-      new THREE.MeshStandardMaterial({ color: 0x1b2a3a, metalness: 0.6, roughness: 0.1 }));
-    glass.position.copy(cab.position); glass.position.y += 0.02; glass.scale.set(1.01, 1, 1.01); grp.add(glass);
-    // roues
-    const wheelGeo = new THREE.CylinderGeometry(v.h * 0.22, v.h * 0.22, 0.3, 12);
-    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
-    const wy = v.h * 0.22;
-    const xoff = v.w / 2;
-    for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
-      const wheel = new THREE.Mesh(wheelGeo, wheelMat);
-      wheel.rotation.z = Math.PI / 2;
-      wheel.position.set(sx * xoff, wy, sz * v.l * 0.32);
-      grp.add(wheel);
-    }
-    // phares
-    for (const sx of [-1, 1]) {
-      const h = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), new THREE.MeshStandardMaterial({ color: 0xfff7d0, emissive: 0xfff0a0 }));
-      h.position.set(sx * v.w * 0.3, v.h * 0.4, v.l / 2); grp.add(h);
+    const paint = new THREE.MeshStandardMaterial({ color: col, metalness: 0.55, roughness: 0.32 });
+    const paint2 = new THREE.MeshStandardMaterial({ color: col.clone().multiplyScalar(0.92), metalness: 0.55, roughness: 0.32 });
+    const glass = new THREE.MeshStandardMaterial({ color: 0x0d1722, metalness: 0.9, roughness: 0.08 });
+    const trim = new THREE.MeshStandardMaterial({ color: 0x15171a, roughness: 0.7, metalness: 0.3 });
+    const chrome = new THREE.MeshStandardMaterial({ color: 0xccd2d8, metalness: 0.9, roughness: 0.25 });
+    const lightF = new THREE.MeshStandardMaterial({ color: 0xfff6d5, emissive: 0xfff0b0, emissiveIntensity: 0.85 });
+    const lightR = new THREE.MeshStandardMaterial({ color: 0x6e0d0d, emissive: 0xff2222, emissiveIntensity: 0.55 });
+    const green = new THREE.MeshStandardMaterial({ color: 0x2f6b3a, metalness: 0.5, roughness: 0.6 });
+
+    const W = v.w, L = v.l, H = v.h;
+    const wheelR = Math.max(0.3, H * 0.21);
+    let cl = L, cz = 0; // longueur/centre de la caisse (modifiables pour la remorque)
+
+    const addWheel = (x, z, r = wheelR) => {
+      const tire = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.32, 16), trim);
+      tire.rotation.z = Math.PI / 2; tire.position.set(x, r, z); tire.castShadow = true; grp.add(tire);
+      const hub = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.55, r * 0.55, 0.34, 8), chrome);
+      hub.rotation.z = Math.PI / 2; hub.position.set(x, r, z); grp.add(hub);
+    };
+    const addLights = (frontZ, backZ) => {
+      for (const sx of [-1, 1]) {
+        const hl = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.18, 0.07), lightF); hl.position.set(sx * W * 0.32, wheelR + 0.28, frontZ); grp.add(hl);
+        const tl = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.16, 0.07), lightR); tl.position.set(sx * W * 0.32, wheelR + 0.32, backZ); grp.add(tl);
+      }
+    };
+
+    const buildCar = (wagon) => {
+      const bH = 0.5, bY = wheelR + 0.04;
+      const lower = new THREE.Mesh(new THREE.BoxGeometry(W, bH, cl * 0.98), paint);
+      lower.position.set(0, bY + bH / 2, cz); lower.castShadow = true; grp.add(lower);
+      const skirt = new THREE.Mesh(new THREE.BoxGeometry(W * 1.01, 0.18, cl * 0.99), trim);
+      skirt.position.set(0, bY, cz); grp.add(skirt);
+      const cabL = wagon ? cl * 0.55 : cl * 0.44;
+      const cabZ = cz + (wagon ? -cl * 0.02 : -cl * 0.05);
+      const cab = new THREE.Mesh(new THREE.BoxGeometry(W * 0.9, 0.46, cabL), paint2);
+      cab.position.set(0, bY + bH + 0.22, cabZ); cab.castShadow = true; grp.add(cab);
+      const gb = new THREE.Mesh(new THREE.BoxGeometry(W * 0.93, 0.34, cabL * 0.95), glass);
+      gb.position.set(0, bY + bH + 0.22, cabZ); grp.add(gb);
+      const roof = new THREE.Mesh(new THREE.BoxGeometry(W * 0.82, 0.1, cabL * 0.9), paint2);
+      roof.position.set(0, bY + bH + 0.46, cabZ); grp.add(roof);
+      for (const sz of [1, -1]) { const b = new THREE.Mesh(new THREE.BoxGeometry(W * 0.98, 0.2, 0.16), trim); b.position.set(0, bY + 0.04, cz + sz * cl * 0.49); grp.add(b); }
+      addWheel(W / 2 - 0.04, cz + cl * 0.3); addWheel(-W / 2 + 0.04, cz + cl * 0.3);
+      addWheel(W / 2 - 0.04, cz - cl * 0.3); addWheel(-W / 2 + 0.04, cz - cl * 0.3);
+      addLights(cz + cl * 0.49, cz - cl * 0.49);
+    };
+
+    const buildVan = () => {
+      const bY = wheelR + 0.02;
+      const cab = new THREE.Mesh(new THREE.BoxGeometry(W, H * 0.6, L * 0.3), paint);
+      cab.position.set(0, bY + H * 0.3, L * 0.33); cab.castShadow = true; grp.add(cab);
+      const ws = new THREE.Mesh(new THREE.BoxGeometry(W * 0.9, H * 0.32, 0.08), glass);
+      ws.position.set(0, bY + H * 0.4, L * 0.48); grp.add(ws);
+      for (const sx of [-1, 1]) { const sw = new THREE.Mesh(new THREE.BoxGeometry(0.06, H * 0.26, L * 0.22), glass); sw.position.set(sx * W * 0.5, bY + H * 0.4, L * 0.34); grp.add(sw); }
+      const box = new THREE.Mesh(new THREE.BoxGeometry(W, H * 0.92, L * 0.64), paint2);
+      box.position.set(0, bY + H * 0.46, -L * 0.12); box.castShadow = true; grp.add(box);
+      const door = new THREE.Mesh(new THREE.BoxGeometry(W * 0.97, H * 0.86, 0.05), trim);
+      door.position.set(0, bY + H * 0.46, -L * 0.44); grp.add(door);
+      addWheel(W / 2 - 0.04, L * 0.3); addWheel(-W / 2 + 0.04, L * 0.3);
+      addWheel(W / 2 - 0.04, -L * 0.3); addWheel(-W / 2 + 0.04, -L * 0.3);
+      addLights(L * 0.49, -L * 0.46);
+    };
+
+    const buildTruck = () => {
+      const bY = wheelR + 0.12;
+      const cab = new THREE.Mesh(new THREE.BoxGeometry(W, H * 0.66, L * 0.24), paint);
+      cab.position.set(0, bY + H * 0.33, L * 0.36); cab.castShadow = true; grp.add(cab);
+      const ws = new THREE.Mesh(new THREE.BoxGeometry(W * 0.9, H * 0.36, 0.08), glass);
+      ws.position.set(0, bY + H * 0.42, L * 0.48); grp.add(ws);
+      const chassis = new THREE.Mesh(new THREE.BoxGeometry(W * 0.88, 0.22, L * 0.72), trim);
+      chassis.position.set(0, bY - 0.02, -L * 0.1); grp.add(chassis);
+      // benne verte transportée (ampliroll)
+      const skip = new THREE.Mesh(new THREE.BoxGeometry(W * 0.92, H * 0.5, L * 0.6), green);
+      skip.position.set(0, bY + H * 0.32, -L * 0.12); skip.castShadow = true; grp.add(skip);
+      for (let i = 0; i < 6; i++) { const r = new THREE.Mesh(new THREE.BoxGeometry(0.06, H * 0.46, 0.05), new THREE.MeshStandardMaterial({ color: 0x244f2c })); r.position.set(-W * 0.4 + i * (W * 0.8 / 5), bY + H * 0.32, L * 0.18); grp.add(r); }
+      addWheel(W / 2 - 0.04, L * 0.34); addWheel(-W / 2 + 0.04, L * 0.34);
+      addWheel(W / 2 - 0.04, -L * 0.16); addWheel(-W / 2 + 0.04, -L * 0.16);
+      addWheel(W / 2 - 0.04, -L * 0.34); addWheel(-W / 2 + 0.04, -L * 0.34);
+      addLights(L * 0.48, -L * 0.46);
+    };
+
+    const buildCarTrailer = () => {
+      cl = 3.5; cz = L * 0.28; buildCar(false);
+      const tz = -L * 0.27, tW = W * 0.95;
+      const bed = new THREE.Mesh(new THREE.BoxGeometry(tW, 0.18, L * 0.46), trim); bed.position.set(0, wheelR + 0.14, tz); bed.castShadow = true; grp.add(bed);
+      for (const sx of [-1, 1]) { const side = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.42, L * 0.46), paint2); side.position.set(sx * tW * 0.5, wheelR + 0.37, tz); grp.add(side); }
+      const f = new THREE.Mesh(new THREE.BoxGeometry(tW, 0.42, 0.07), paint2); f.position.set(0, wheelR + 0.37, tz + L * 0.23); grp.add(f);
+      const bk = new THREE.Mesh(new THREE.BoxGeometry(tW, 0.42, 0.07), paint2); bk.position.set(0, wheelR + 0.37, tz - L * 0.23); grp.add(bk);
+      const tow = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, L * 0.18), chrome); tow.position.set(0, wheelR + 0.06, tz + L * 0.33); grp.add(tow);
+      addWheel(W / 2 - 0.08, tz, wheelR * 0.85); addWheel(-W / 2 + 0.08, tz, wheelR * 0.85);
+    };
+
+    switch (v.id) {
+      case 'break': buildCar(true); break;
+      case 'utilitaire': case 'camionnette': buildVan(); break;
+      case 'camion': buildTruck(); break;
+      case 'remorque': buildCarTrailer(); break;
+      case 'voiture': default: buildCar(false);
     }
     grp.userData.kind = 'vehicle';
     return grp;
@@ -615,9 +720,12 @@ export class Scene3D {
     for (const ent of [...this.vehicles]) this._stepVehicle(ent, dt);
     this._stepWeather(dt);
     this._updateLamps();
-    // conteneurs pleins : pulsation
-    const pulse = 1 + Math.sin(performance.now() / 200) * 0.04;
-    this.containers.forEach(mesh => { if (mesh.userData.full) mesh.scale.y = pulse; else mesh.scale.y = 1; });
+    // conteneurs pleins : gyrophare clignotant
+    const blink = 0.5 + 0.5 * Math.sin(performance.now() / 150);
+    this.containers.forEach(mesh => {
+      const b = mesh.userData.beacon;
+      if (b) b.material.emissiveIntensity = mesh.userData.full ? blink : 0;
+    });
     // feux
     const now = performance.now();
     for (const s of [...this.smoke]) {

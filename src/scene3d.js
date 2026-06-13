@@ -19,6 +19,7 @@ export class Scene3D {
     this.parkingSlots = [];        // { pos, busy }
     this.clock = new THREE.Clock();
     this.smoke = [];               // panaches (incendie)
+    this.emptyAnims = [];          // séquences de vidage (camion ampliroll)
     this._initRenderer();
     this._initScene();
     this._initLights();
@@ -131,6 +132,12 @@ export class Scene3D {
     [['cone', -6, GROUND / 2 - 3], ['cone', 6, GROUND / 2 - 3], ['cone', -3, GROUND / 2 - 9], ['cone', 3, GROUND / 2 - 9]]
       .forEach(([t, x, z]) => { const m = this._makeBuildingMesh(t); m.position.set(x, 0, z); this.scene.add(m); });
     const sign = this._makeBuildingMesh('panneau'); sign.position.set(-12, 0, GROUND / 2 - 13); sign.rotation.y = 0.4; this.scene.add(sign);
+
+    // Quai surélevé fixe (mur de soutènement) au fond du parc, comme en recyparc :
+    // les usagers s'y garent en hauteur et basculent leurs déchets dans les bennes.
+    for (let x = -16; x <= 16; x += 8) {
+      const q = this._makeBuildingMesh('quai'); q.position.set(x, 0, -GROUND / 2 + 8); q.rotation.y = Math.PI; this.scene.add(q);
+    }
   }
 
   _buildBarrier(x, z) {
@@ -218,8 +225,8 @@ export class Scene3D {
   _makeContainerMesh(fraction) {
     const grp = new THREE.Group();
     const base = new THREE.Color((FRACTIONS[fraction] && FRACTIONS[fraction].color) || '#2f6b3a');
-    // teinte « acier peint » (assombrie vers le vert industriel)
-    const steel = base.clone().lerp(new THREE.Color('#13351f'), 0.22);
+    // teinte « acier peint » : couleur de fraction franche, juste assombrie
+    const steel = base.clone().multiplyScalar(0.88);
     const mat = new THREE.MeshStandardMaterial({ color: steel, metalness: 0.55, roughness: 0.5 });
     const dark = new THREE.MeshStandardMaterial({ color: steel.clone().multiplyScalar(0.72), metalness: 0.55, roughness: 0.55 });
     const black = new THREE.MeshStandardMaterial({ color: 0x141414, metalness: 0.5, roughness: 0.6 });
@@ -249,15 +256,6 @@ export class Scene3D {
     // galets/roues arrière (-X) caractéristiques du roll-off
     const roller = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, W * 0.9, 12), black);
     roller.rotation.x = Math.PI / 2; roller.position.set(-L / 2 + 0.4, 0.26, 0); grp.add(roller);
-    // rambarde de sécurité le long du quai d'accès (+Z), comme en recyparc
-    const railMat = new THREE.MeshStandardMaterial({ color: 0xf4c20d, metalness: 0.3, roughness: 0.6 });
-    const rZ = W / 2 + 0.6;
-    const railTop = new THREE.Mesh(new THREE.BoxGeometry(L + 0.5, 0.1, 0.1), railMat); railTop.position.set(0, 1.05, rZ); railTop.castShadow = true; grp.add(railTop);
-    const railMid = new THREE.Mesh(new THREE.BoxGeometry(L + 0.5, 0.08, 0.08), railMat); railMid.position.set(0, 0.62, rZ); grp.add(railMid);
-    for (const px of [-1, -0.34, 0.34, 1]) {
-      const post = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.15, 0.1), railMat);
-      post.position.set(px * (L / 2 + 0.05), 0.55, rZ); post.castShadow = true; grp.add(post);
-    }
     // matière à l'intérieur (jauge de remplissage, visible par le dessus ouvert)
     const fill = new THREE.Mesh(new THREE.BoxGeometry(L - 0.4, 1, W - 0.4),
       new THREE.MeshStandardMaterial({ color: base.clone().multiplyScalar(0.85), roughness: 1, flatShading: true }));
@@ -372,6 +370,20 @@ export class Scene3D {
         const top = new THREE.Mesh(new THREE.BoxGeometry(4, 0.1, 0.1), m); top.position.y = 1.05; top.castShadow = true; grp.add(top);
         const mid = new THREE.Mesh(new THREE.BoxGeometry(4, 0.08, 0.08), m); mid.position.y = 0.62; grp.add(mid);
         for (const px of [-1, -0.33, 0.33, 1]) { const p = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.15, 0.1), m); p.position.set(px * 2, 0.55, 0); grp.add(p); } break;
+      }
+      case 'quai': {
+        // Quai surélevé : plateforme béton + mur de soutènement + garde-corps (côté +Z)
+        const concrete = new THREE.MeshStandardMaterial({ color: 0x9a9ea3, roughness: 0.95 });
+        const plat = new THREE.Mesh(new THREE.BoxGeometry(8, 1.6, 4), concrete);
+        plat.position.set(0, 0.8, -2); plat.castShadow = true; plat.receiveShadow = true; grp.add(plat);
+        // bordure jaune anti-chute au bord avant (+Z)
+        const kerb = new THREE.Mesh(new THREE.BoxGeometry(8, 0.18, 0.4), new THREE.MeshStandardMaterial({ color: 0xf4c20d })); kerb.position.set(0, 1.6, 0); grp.add(kerb);
+        // garde-corps le long du bord avant
+        const m = new THREE.MeshStandardMaterial({ color: 0xf4c20d, metalness: 0.3, roughness: 0.6 });
+        const top = new THREE.Mesh(new THREE.BoxGeometry(8, 0.1, 0.1), m); top.position.set(0, 2.7, 0); top.castShadow = true; grp.add(top);
+        const mid = new THREE.Mesh(new THREE.BoxGeometry(8, 0.08, 0.08), m); mid.position.set(0, 2.2, 0); grp.add(mid);
+        for (const px of [-1, -0.5, 0, 0.5, 1]) { const p = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.2, 0.1), m); p.position.set(px * 3.8, 2.1, 0); p.castShadow = true; grp.add(p); }
+        break;
       }
       default: {
         const b = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), wall(0x9aa0a6)); b.position.y = 1.5; grp.add(b);
@@ -535,7 +547,7 @@ export class Scene3D {
     if (ent.state === 'enter' || ent.state === 'leaving' || ent.state === 'exit') {
       const target = ent.waypoints[ent.wpIndex];
       if (!target) {
-        if (ent.state === 'enter') { ent.state = 'unload'; ent.unloadTimer = 2.5 + Math.random() * 2; }
+        if (ent.state === 'enter') { ent.state = 'unload'; ent.unloadTimer = 2.5 + Math.random() * 2; this._spawnVisitorCharacter(ent); }
         else { this._despawn(ent); }
         return;
       }
@@ -551,8 +563,15 @@ export class Scene3D {
       ent.unloadTimer -= dt;
       // petite secousse de déchargement
       m.position.y = Math.sin(performance.now() / 90) * 0.04;
+      // animation du personnage : il jette ses déchets (bras qui balancent)
+      if (ent.character) {
+        const a = performance.now() / 130;
+        ent.character.userData.arms.forEach((arm, i) => { arm.rotation.x = -0.4 + Math.sin(a + i * Math.PI) * 1.3; });
+        ent.character.position.y = Math.abs(Math.sin(a)) * 0.04;
+      }
       if (ent.unloadTimer <= 0) {
         m.position.y = 0;
+        if (ent.character) { this.scene.remove(ent.character); ent.character = null; }
         if (ent.callbacks.onUnload) ent.callbacks.onUnload(ent.visitor);
         this._spawnDropPile(m.position, ent.visitor);
         ent.state = 'exit';
@@ -576,9 +595,39 @@ export class Scene3D {
 
   _despawn(ent) {
     this.scene.remove(ent.mesh);
+    if (ent.character) { this.scene.remove(ent.character); ent.character = null; }
     if (ent.slot) ent.slot.busy = false;
     if (ent.callbacks.onLeave) ent.callbacks.onLeave(ent.visitor);
     this.vehicles = this.vehicles.filter(v => v !== ent);
+  }
+
+  // Petit personnage bas-poly (visiteur qui décharge à côté de son véhicule)
+  _spawnVisitorCharacter(ent) {
+    const g = this._makeCharacter();
+    const p = ent.mesh.position;
+    g.position.set(p.x + (ent.visitor.vehicle.w / 2 + 0.8), 0, p.z - 0.5);
+    this.scene.add(g);
+    ent.character = g;
+  }
+
+  _makeCharacter() {
+    const g = new THREE.Group();
+    const cloth = new THREE.Color().setHSL(Math.random(), 0.5, 0.45);
+    const shirt = new THREE.MeshStandardMaterial({ color: cloth });
+    const pants = new THREE.MeshStandardMaterial({ color: 0x2a3550 });
+    const skin = new THREE.MeshStandardMaterial({ color: 0xe0b48c });
+    const hairCols = [0x3b2a1a, 0x111111, 0x6b4226, 0x999999];
+    const hair = new THREE.MeshStandardMaterial({ color: hairCols[Math.floor(Math.random() * hairCols.length)] });
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.55, 0.26), shirt); torso.position.y = 1.05; torso.castShadow = true; g.add(torso);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 10), skin); head.position.y = 1.46; head.castShadow = true; g.add(head);
+    const cap = new THREE.Mesh(new THREE.SphereGeometry(0.165, 10, 10, 0, 7, 0, 1.3), hair); cap.position.y = 1.48; g.add(cap);
+    const legL = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.62, 0.18), pants); legL.position.set(-0.1, 0.46, 0); legL.castShadow = true; g.add(legL);
+    const legR = legL.clone(); legR.position.x = 0.1; g.add(legR);
+    const armGeo = new THREE.BoxGeometry(0.12, 0.52, 0.12); armGeo.translate(0, -0.26, 0);
+    const armL = new THREE.Mesh(armGeo, shirt); armL.position.set(-0.27, 1.28, 0); g.add(armL);
+    const armR = new THREE.Mesh(armGeo.clone(), shirt); armR.position.set(0.27, 1.28, 0); g.add(armR);
+    g.userData.arms = [armL, armR];
+    return g;
   }
 
   // --- Petits effets ----------------------------------------------------------
@@ -605,6 +654,80 @@ export class Scene3D {
     anim();
   }
 
+  // --- Camion ampliroll de service (bras articulé) qui vient vider une benne --
+  _makeServiceTruck() {
+    const grp = new THREE.Group();
+    const paint = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.5, roughness: 0.4 });
+    const trim = new THREE.MeshStandardMaterial({ color: 0x15171a, roughness: 0.7, metalness: 0.3 });
+    const chrome = new THREE.MeshStandardMaterial({ color: 0xccd2d8, metalness: 0.9, roughness: 0.25 });
+    const glass = new THREE.MeshStandardMaterial({ color: 0x0d1722, metalness: 0.9, roughness: 0.08 });
+    const steel = new THREE.MeshStandardMaterial({ color: 0x333a44, metalness: 0.6, roughness: 0.5 });
+    const W = 2.5, L = 8, H = 3.0, r = 0.7;
+    const cab = new THREE.Mesh(new THREE.BoxGeometry(W, H * 0.66, L * 0.22), paint); cab.position.set(0, r + H * 0.33, L * 0.36); cab.castShadow = true; grp.add(cab);
+    const ws = new THREE.Mesh(new THREE.BoxGeometry(W * 0.9, H * 0.34, 0.08), glass); ws.position.set(0, r + H * 0.45, L * 0.46); grp.add(ws);
+    const chassis = new THREE.Mesh(new THREE.BoxGeometry(W * 0.9, 0.3, L * 0.72), trim); chassis.position.set(0, r, -L * 0.08); grp.add(chassis);
+    // bras ampliroll articulé (pivote autour de l'arrière du châssis)
+    const arm = new THREE.Group();
+    const a1 = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.22, L * 0.5), steel); a1.position.set(0, 0, L * 0.2); arm.add(a1);
+    const a2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.7, 0.2), steel); a2.position.set(0, 0.85, L * 0.42); arm.add(a2);
+    const hook = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.05, 6, 10, Math.PI), chrome); hook.rotation.x = Math.PI / 2; hook.position.set(0, 1.6, L * 0.42); arm.add(hook);
+    arm.position.set(0, r + 0.35, -L * 0.32); grp.add(arm); grp.userData.arm = arm;
+    const addWheel = (x, z) => {
+      const t = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.34, 16), trim); t.rotation.z = Math.PI / 2; t.position.set(x, r, z); t.castShadow = true; grp.add(t);
+      const h = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.5, r * 0.5, 0.36, 8), chrome); h.rotation.z = Math.PI / 2; h.position.set(x, r, z); grp.add(h);
+    };
+    for (const z of [L * 0.34, -L * 0.16, -L * 0.34]) { addWheel(W / 2 - 0.05, z); addWheel(-W / 2 + 0.05, z); }
+    for (const sx of [-1, 1]) { const hl = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.18, 0.07), new THREE.MeshStandardMaterial({ color: 0xfff6d5, emissive: 0xfff0b0, emissiveIntensity: 0.8 })); hl.position.set(sx * W * 0.32, r + 0.3, L * 0.47); grp.add(hl); }
+    // gyrophare orange
+    const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), new THREE.MeshStandardMaterial({ color: 0xff8800, emissive: 0xff7700, emissiveIntensity: 1 }));
+    beacon.position.set(0, r + H * 0.66, L * 0.28); grp.add(beacon);
+    grp.userData.kind = 'service';
+    return grp;
+  }
+
+  // Lance la séquence : un camion arrive, lève son bras, bascule la benne, repart.
+  playEmptyAnimation(containerId) {
+    const cont = this.containers.get(containerId);
+    if (!cont) return;
+    if (this.emptyAnims.some(a => a.containerId === containerId)) return;
+    const truck = this._makeServiceTruck();
+    truck.position.set(0, 0, GROUND / 2 + 30);
+    this.scene.add(truck);
+    // se gare côté crochet de la benne (-X), face à elle
+    const target = new THREE.Vector3(cont.position.x - 6.5, 0, cont.position.z);
+    this.emptyAnims.push({ containerId, truck, cont, phase: 'in', t: 0, target, baseRot: cont.rotation.z });
+  }
+
+  _stepEmptyAnims(dt) {
+    const speed = 13;
+    for (const a of [...this.emptyAnims]) {
+      const { truck, cont } = a;
+      if (a.phase === 'in' || a.phase === 'out') {
+        let target = a.phase === 'in' ? a.target : (a.wp && a.wp[a.wi]);
+        if (a.phase === 'out' && !target) { this.scene.remove(truck); this.emptyAnims = this.emptyAnims.filter(x => x !== a); continue; }
+        const dir = target.clone().sub(truck.position); dir.y = 0; const d = dir.length();
+        if (d < 0.6) { if (a.phase === 'in') { a.phase = 'tip'; a.t = 0; } else a.wi++; }
+        else { dir.normalize(); truck.position.addScaledVector(dir, Math.min(speed * dt, d)); truck.rotation.y += this._angleLerp(truck.rotation.y, Math.atan2(dir.x, dir.z)) * Math.min(1, dt * 5); }
+      } else if (a.phase === 'tip') {
+        a.t += dt; const k = Math.min(1, a.t / 1.0);
+        cont.rotation.z = a.baseRot - 0.85 * k;
+        truck.userData.arm.rotation.x = -0.95 * k;
+        if (k >= 1) { a.phase = 'hold'; a.t = 0; this._spawnDropPile(cont.position, { cargo: [{}] }); }
+      } else if (a.phase === 'hold') {
+        a.t += dt; if (a.t > 0.6) { a.phase = 'untip'; a.t = 0; }
+      } else if (a.phase === 'untip') {
+        a.t += dt; const k = Math.min(1, a.t / 0.8);
+        cont.rotation.z = a.baseRot - 0.85 * (1 - k);
+        truck.userData.arm.rotation.x = -0.95 * (1 - k);
+        if (k >= 1) {
+          cont.rotation.z = a.baseRot; truck.userData.arm.rotation.x = 0;
+          a.phase = 'out'; a.wi = 0;
+          a.wp = [new THREE.Vector3(truck.position.x, 0, GROUND / 2 - 4), new THREE.Vector3(0, 0, GROUND / 2 - 4), new THREE.Vector3(0, 0, GROUND / 2 + 30)];
+        }
+      }
+    }
+  }
+
   spawnFire(pos) {
     const grp = new THREE.Group();
     const light = new THREE.PointLight(0xff6622, 3, 20); light.position.set(0, 3, 0); grp.add(light);
@@ -626,7 +749,7 @@ export class Scene3D {
     if (this._skipTexCache[key]) return this._skipTexCache[key];
     const cv = document.createElement('canvas'); cv.width = 600; cv.height = 250;
     const ctx = cv.getContext('2d');
-    const base = new THREE.Color(hex).lerp(new THREE.Color('#173a22'), 0.2);
+    const base = new THREE.Color(hex).multiplyScalar(0.9);
     // fond
     ctx.fillStyle = '#' + base.getHexString(); ctx.fillRect(0, 0, 600, 250);
     // ondulations verticales (clair/sombre)
@@ -830,6 +953,7 @@ export class Scene3D {
   update(dt) {
     this.controls.update();
     for (const ent of [...this.vehicles]) this._stepVehicle(ent, dt);
+    this._stepEmptyAnims(dt);
     this._stepWeather(dt);
     this._updateLamps();
     // conteneurs pleins : gyrophare clignotant

@@ -263,6 +263,7 @@ class Game {
     if (!c || c.fill <= 0) { this.ui.toast('Conteneur vide', 'info', 'ℹ'); return; }
     const res = Sys.emptyContainer(s, c);
     this.scene.updateContainerFill(c);
+    this.scene.playEmptyAnimation(c.id); // camion ampliroll vient basculer la benne
     this.audio.cash();
     const sign = res.net >= 0 ? '+' : '';
     this.ui.toast(`${FRACTIONS[c.fraction].name} évacué : <b>${sign}${res.net.toLocaleString('fr-BE')} €</b> (${res.tons.toFixed(1)} t)`, res.net >= 0 ? 'good' : 'warn', '💶');

@@ -190,6 +190,7 @@ export const BUILDINGS = [
   { id: 'hangar',      name: 'Hangar de tri',       cost: 42000, cat: 'batiment',  icon: '🏭', desc: 'Abrite le tri (météo neutre).' },
   { id: 'entrepot',    name: 'Entrepôt',            cost: 35000, cat: 'batiment',  icon: '📦', desc: 'Stocke les matières valorisées.' },
   { id: 'zone_charge', name: 'Aire de chargement',  cost: 8000,  cat: 'batiment',  icon: '🚏', desc: 'Évacuation plus rapide.' },
+  { id: 'quai',        name: 'Quai surélevé',       cost: 12000, cat: 'batiment',  icon: '🧱', desc: 'Plateforme + mur de soutènement pour décharger dans les bennes.' },
   { id: 'poste_secu',  name: 'Poste de sécurité',   cost: 14000, cat: 'batiment',  icon: '🛂', desc: 'Réduit les incidents.' },
   { id: 'arbre',       name: 'Arbre',               cost: 300,   cat: 'deco',      icon: '🌳', desc: '+réputation environnementale.' },
   { id: 'haie',        name: 'Haie',                cost: 180,   cat: 'deco',      icon: '🌿', desc: 'Décoration verte.' },

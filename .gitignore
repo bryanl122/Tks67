@@ -1,0 +1,11 @@
+# Dépendances (Three.js est vendorisé dans vendor/, pas besoin de node_modules)
+node_modules/
+package-lock.json
+
+# Logs & temporaires
+*.log
+/tmp/
+
+# OS
+.DS_Store
+Thumbs.db

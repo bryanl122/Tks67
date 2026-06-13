@@ -5,6 +5,7 @@
 // =============================================================================
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { FRACTIONS } from './data.js';
 
 const TILE = 4;                 // taille d'une case (m)
@@ -36,14 +37,17 @@ export class Scene3D {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    // Rendu cinématographique (PBR)
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.05;
   }
 
   _initScene() {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x9cc3e0);
-    this.scene.fog = new THREE.Fog(0x9cc3e0, 90, 200);
+    this.scene.fog = new THREE.Fog(0x9cc3e0, 110, 340);
 
-    this.camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 1200);
     this.camera.position.set(45, 42, 55);
 
     this.controls = new OrbitControls(this.camera, this.canvas);
@@ -51,9 +55,66 @@ export class Scene3D {
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.08;
     this.controls.maxPolarAngle = Math.PI / 2.15;
-    this.controls.minDistance = 18;
-    this.controls.maxDistance = 120;
+    this.controls.minDistance = 14;
+    this.controls.maxDistance = 140;
     this.controls.update();
+
+    // Environnement PBR : reflets réalistes sur les métaux et les vitres
+    const pmrem = new THREE.PMREMGenerator(this.renderer);
+    this.envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
+    this.scene.environment = this.envRT.texture;
+
+    this._initSky();
+  }
+
+  _initSky() {
+    // Dôme de ciel dégradé
+    const skyMat = new THREE.ShaderMaterial({
+      uniforms: {
+        top: { value: new THREE.Color(0x2c6fb3) }, bottom: { value: new THREE.Color(0xcfe8f7) },
+        offset: { value: 30 }, exponent: { value: 0.7 },
+      },
+      vertexShader: 'varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+      fragmentShader: 'uniform vec3 top; uniform vec3 bottom; uniform float offset; uniform float exponent; varying vec3 vP; void main(){ float h = normalize(vP + vec3(0.0,offset,0.0)).y; float k = pow(max(h,0.0), exponent); gl_FragColor = vec4(mix(bottom, top, k), 1.0); }',
+      side: THREE.BackSide, depthWrite: false, fog: false,
+    });
+    this.sky = new THREE.Mesh(new THREE.SphereGeometry(400, 32, 16), skyMat);
+    this.scene.add(this.sky);
+
+    // Halo du soleil
+    this.sunGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: this._glowTexture(), color: 0xfff2c0, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
+    this.sunGlow.scale.setScalar(70); this.scene.add(this.sunGlow);
+
+    // Nuages dérivants
+    this.clouds = new THREE.Group(); this.scene.add(this.clouds);
+    const ctex = this._cloudTexture();
+    for (let i = 0; i < 16; i++) {
+      const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: ctex, transparent: true, opacity: 0.85, depthWrite: false, fog: false }));
+      s.position.set((Math.random() - 0.5) * 600, 110 + Math.random() * 70, (Math.random() - 0.5) * 600);
+      const sc = 70 + Math.random() * 90; s.scale.set(sc, sc * 0.55, 1);
+      this.clouds.add(s);
+    }
+  }
+
+  _glowTexture() {
+    const cv = document.createElement('canvas'); cv.width = cv.height = 128;
+    const ctx = cv.getContext('2d');
+    const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    g.addColorStop(0, 'rgba(255,255,235,1)'); g.addColorStop(0.25, 'rgba(255,240,190,0.7)'); g.addColorStop(1, 'rgba(255,240,190,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, 128, 128);
+    const t = new THREE.CanvasTexture(cv); return t;
+  }
+
+  _cloudTexture() {
+    const cv = document.createElement('canvas'); cv.width = 256; cv.height = 128;
+    const ctx = cv.getContext('2d');
+    for (let i = 0; i < 22; i++) {
+      const x = 40 + Math.random() * 176, y = 50 + Math.random() * 40, r = 18 + Math.random() * 34;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, 'rgba(255,255,255,0.9)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+    }
+    const t = new THREE.CanvasTexture(cv); return t;
   }
 
   _initLights() {
@@ -72,7 +133,7 @@ export class Scene3D {
     this.scene.add(this.sun);
     this.scene.add(this.sun.target);
 
-    this.ambient = new THREE.AmbientLight(0xffffff, 0.25);
+    this.ambient = new THREE.AmbientLight(0xffffff, 0.12);
     this.scene.add(this.ambient);
   }
 
@@ -90,8 +151,8 @@ export class Scene3D {
     const slab = new THREE.Mesh(new THREE.BoxGeometry(GROUND, 0.4, GROUND), new THREE.MeshStandardMaterial({ color: 0x6f7378, roughness: 0.95 }));
     slab.position.y = -0.2; slab.receiveShadow = true;
     this.scene.add(slab); this.slab = slab;
-    const surface = new THREE.Mesh(new THREE.PlaneGeometry(GROUND, GROUND),
-      new THREE.MeshStandardMaterial({ map: this._concreteTexture(), roughness: 0.95, metalness: 0.02 }));
+    this.surfaceMat = new THREE.MeshStandardMaterial({ map: this._concreteTexture(), roughness: 0.95, metalness: 0.02 });
+    const surface = new THREE.Mesh(new THREE.PlaneGeometry(GROUND, GROUND), this.surfaceMat);
     surface.rotation.x = -Math.PI / 2; surface.position.y = 0.011; surface.receiveShadow = true;
     this.scene.add(surface);
 
@@ -137,6 +198,23 @@ export class Scene3D {
     // les usagers s'y garent en hauteur et basculent leurs déchets dans les bennes.
     for (let x = -16; x <= 16; x += 8) {
       const q = this._makeBuildingMesh('quai'); q.position.set(x, 0, -GROUND / 2 + 8); q.rotation.y = Math.PI; this.scene.add(q);
+    }
+
+    // Décor environnant : ceinture d'arbres + collines lointaines (profondeur)
+    for (let i = 0; i < 60; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const rad = GROUND / 2 + 6 + Math.random() * 75;
+      const x = Math.cos(ang) * rad, z = Math.sin(ang) * rad;
+      if (Math.abs(x) < 9 && z > GROUND / 2) continue; // dégage l'entrée
+      const tree = this._makeBuildingMesh('arbre');
+      tree.scale.setScalar(0.8 + Math.random() * 1.5);
+      tree.position.set(x, 0, z); this.scene.add(tree);
+    }
+    for (let i = 0; i < 7; i++) {
+      const hill = new THREE.Mesh(new THREE.SphereGeometry(45 + Math.random() * 35, 16, 12), new THREE.MeshStandardMaterial({ color: 0x5f7d44, roughness: 1 }));
+      const ang = Math.random() * Math.PI * 2, rad = 160 + Math.random() * 130;
+      hill.position.set(Math.cos(ang) * rad, -32 - Math.random() * 12, Math.sin(ang) * rad);
+      hill.scale.y = 0.42; this.scene.add(hill);
     }
   }
 
@@ -326,8 +404,14 @@ export class Scene3D {
         break;
       }
       case 'arbre': {
-        const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 2.4, 7), wall(0x6b4226)); trunk.position.y = 1.2; trunk.castShadow = true; grp.add(trunk);
-        const foliage = new THREE.Mesh(new THREE.IcosahedronGeometry(1.8, 0), new THREE.MeshStandardMaterial({ color: 0x2f7d32, flatShading: true })); foliage.position.y = 3.4; foliage.castShadow = true; grp.add(foliage);
+        const h = 2.2 + Math.random() * 1.2;
+        const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.4, h, 8), wall(0x6b4226)); trunk.position.y = h / 2; trunk.castShadow = true; grp.add(trunk);
+        const greens = [0x2f7d32, 0x357a2e, 0x418f3a, 0x2a6b2d, 0x4d9a3f];
+        const fm = new THREE.MeshStandardMaterial({ color: greens[Math.floor(Math.random() * greens.length)], flatShading: true, roughness: 0.9 });
+        for (const [x, y, z, r] of [[0, h + 0.6, 0, 1.7], [-0.9, h + 0.2, 0.4, 1.1], [0.9, h + 0.3, -0.3, 1.2], [0.2, h + 1.4, 0.2, 1.1]]) {
+          const f = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), fm); f.position.set(x, y, z); f.rotation.set(Math.random(), Math.random(), Math.random()); f.castShadow = true; grp.add(f);
+        }
+        grp.rotation.y = Math.random() * Math.PI;
         break;
       }
       case 'haie': {
@@ -422,11 +506,14 @@ export class Scene3D {
     const wheelR = Math.max(0.3, H * 0.21);
     let cl = L, cz = 0; // longueur/centre de la caisse (modifiables pour la remorque)
 
+    grp.userData.wheels = []; grp.userData.wheelR = wheelR;
     const addWheel = (x, z, r = wheelR) => {
-      const tire = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.32, 16), trim);
-      tire.rotation.z = Math.PI / 2; tire.position.set(x, r, z); tire.castShadow = true; grp.add(tire);
-      const hub = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.55, r * 0.55, 0.34, 8), chrome);
-      hub.rotation.z = Math.PI / 2; hub.position.set(x, r, z); grp.add(hub);
+      const pivot = new THREE.Group(); pivot.position.set(x, r, z);
+      const tire = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.32, 18), trim); tire.rotation.z = Math.PI / 2; tire.castShadow = true; pivot.add(tire);
+      const hub = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.55, r * 0.55, 0.34, 10), chrome); hub.rotation.z = Math.PI / 2; pivot.add(hub);
+      const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.36, r * 1.5, 0.05), chrome); pivot.add(spoke);
+      const spoke2 = spoke.clone(); spoke2.rotation.x = Math.PI / 2; pivot.add(spoke2);
+      grp.add(pivot); grp.userData.wheels.push({ pivot, r });
     };
     const addLights = (frontZ, backZ) => {
       for (const sx of [-1, 1]) {
@@ -450,6 +537,8 @@ export class Scene3D {
       const roof = new THREE.Mesh(new THREE.BoxGeometry(W * 0.82, 0.1, cabL * 0.9), paint2);
       roof.position.set(0, bY + bH + 0.46, cabZ); grp.add(roof);
       for (const sz of [1, -1]) { const b = new THREE.Mesh(new THREE.BoxGeometry(W * 0.98, 0.2, 0.16), trim); b.position.set(0, bY + 0.04, cz + sz * cl * 0.49); grp.add(b); }
+      // plaques d'immatriculation
+      for (const sz of [1, -1]) { const pl = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.15, 0.03), new THREE.MeshStandardMaterial({ color: 0xf4f0d6 })); pl.position.set(0, bY + 0.2, cz + sz * cl * 0.5); grp.add(pl); }
       addWheel(W / 2 - 0.04, cz + cl * 0.3); addWheel(-W / 2 + 0.04, cz + cl * 0.3);
       addWheel(W / 2 - 0.04, cz - cl * 0.3); addWheel(-W / 2 + 0.04, cz - cl * 0.3);
       addLights(cz + cl * 0.49, cz - cl * 0.49);
@@ -547,7 +636,7 @@ export class Scene3D {
     if (ent.state === 'enter' || ent.state === 'leaving' || ent.state === 'exit') {
       const target = ent.waypoints[ent.wpIndex];
       if (!target) {
-        if (ent.state === 'enter') { ent.state = 'unload'; ent.unloadTimer = 2.5 + Math.random() * 2; this._spawnVisitorCharacter(ent); }
+        if (ent.state === 'enter') { ent.state = 'unload'; ent.unloadTimer = 3.5 + Math.random() * 2; ent.unloadTotal = ent.unloadTimer; this._spawnVisitorCharacter(ent); }
         else { this._despawn(ent); }
         return;
       }
@@ -555,19 +644,28 @@ export class Scene3D {
       const dist = dir.length();
       if (dist < 0.4) { ent.wpIndex++; return; }
       dir.normalize();
-      m.position.addScaledVector(dir, Math.min(speed * dt, dist));
+      const moved = Math.min(speed * dt, dist);
+      m.position.addScaledVector(dir, moved);
       const targetAngle = Math.atan2(dir.x, dir.z);
       m.rotation.y += this._angleLerp(m.rotation.y, targetAngle) * Math.min(1, dt * 6);
-      // rotation des roues : visuel léger
+      // rotation des roues proportionnelle à la distance parcourue
+      if (m.userData.wheels) m.userData.wheels.forEach(w => { w.pivot.rotation.x -= moved / w.r; });
     } else if (ent.state === 'unload') {
       ent.unloadTimer -= dt;
       // petite secousse de déchargement
       m.position.y = Math.sin(performance.now() / 90) * 0.04;
-      // animation du personnage : il jette ses déchets (bras qui balancent)
+      // personnage : marche jusqu'au quai, jette ses déchets, puis revient
       if (ent.character) {
-        const a = performance.now() / 130;
-        ent.character.userData.arms.forEach((arm, i) => { arm.rotation.x = -0.4 + Math.sin(a + i * Math.PI) * 1.3; });
-        ent.character.position.y = Math.abs(Math.sin(a)) * 0.04;
+        const ch = ent.character, u = ch.userData;
+        const p = ent.unloadTotal ? 1 - ent.unloadTimer / ent.unloadTotal : 0;
+        let walking = false, throwing = false;
+        if (p < 0.32) { ch.position.lerpVectors(u.home, u.dump, p / 0.32); walking = true; ch.lookAt(u.dump.x, 0, u.dump.z); }
+        else if (p < 0.62) { ch.position.copy(u.dump); throwing = true; ch.lookAt(u.dump.x, 0, u.dump.z - 1); }
+        else { ch.position.lerpVectors(u.dump, u.home, (p - 0.62) / 0.38); walking = true; ch.lookAt(u.home.x, 0, u.home.z); }
+        const tw = performance.now() / 120;
+        if (u.legs) u.legs.forEach((leg, i) => { leg.rotation.x = walking ? Math.sin(tw + i * Math.PI) * 0.7 : 0; });
+        u.arms.forEach((arm, i) => { arm.rotation.x = throwing ? (-0.7 + Math.sin(performance.now() / 80 + i * Math.PI) * 1.5) : (walking ? Math.sin(tw + i * Math.PI) * 0.5 : -0.1); });
+        ch.position.y = walking ? Math.abs(Math.sin(tw)) * 0.04 : 0;
       }
       if (ent.unloadTimer <= 0) {
         m.position.y = 0;
@@ -605,7 +703,10 @@ export class Scene3D {
   _spawnVisitorCharacter(ent) {
     const g = this._makeCharacter();
     const p = ent.mesh.position;
-    g.position.set(p.x + (ent.visitor.vehicle.w / 2 + 0.8), 0, p.z - 0.5);
+    const home = new THREE.Vector3(p.x + (ent.visitor.vehicle.w / 2 + 0.8), 0, p.z - 0.5);
+    g.position.copy(home);
+    g.userData.home = home;
+    g.userData.dump = new THREE.Vector3(p.x + 1.2, 0, p.z - 4.2); // marche vers les bennes
     this.scene.add(g);
     ent.character = g;
   }
@@ -621,12 +722,14 @@ export class Scene3D {
     const torso = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.55, 0.26), shirt); torso.position.y = 1.05; torso.castShadow = true; g.add(torso);
     const head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 10), skin); head.position.y = 1.46; head.castShadow = true; g.add(head);
     const cap = new THREE.Mesh(new THREE.SphereGeometry(0.165, 10, 10, 0, 7, 0, 1.3), hair); cap.position.y = 1.48; g.add(cap);
-    const legL = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.62, 0.18), pants); legL.position.set(-0.1, 0.46, 0); legL.castShadow = true; g.add(legL);
-    const legR = legL.clone(); legR.position.x = 0.1; g.add(legR);
+    const legGeo = new THREE.BoxGeometry(0.16, 0.64, 0.18); legGeo.translate(0, -0.32, 0);
+    const legL = new THREE.Mesh(legGeo, pants); legL.position.set(-0.1, 0.78, 0); legL.castShadow = true; g.add(legL);
+    const legR = new THREE.Mesh(legGeo.clone(), pants); legR.position.set(0.1, 0.78, 0); g.add(legR);
     const armGeo = new THREE.BoxGeometry(0.12, 0.52, 0.12); armGeo.translate(0, -0.26, 0);
     const armL = new THREE.Mesh(armGeo, shirt); armL.position.set(-0.27, 1.28, 0); g.add(armL);
     const armR = new THREE.Mesh(armGeo.clone(), shirt); armR.position.set(0.27, 1.28, 0); g.add(armR);
     g.userData.arms = [armL, armR];
+    g.userData.legs = [legL, legR];
     return g;
   }
 
@@ -847,31 +950,54 @@ export class Scene3D {
     const t = (hour - 6) / 12; // 0 au lever (6h), 1 au coucher (18h)
     const angle = Math.PI * Math.max(0, Math.min(1, t));
     const elev = Math.sin(angle);
-    this.sun.position.set(Math.cos(angle) * 60, Math.max(2, elev * 70), 20);
+    const sunDir = new THREE.Vector3(Math.cos(angle) * 1, Math.max(0.04, elev), 0.32).normalize();
+    this.sun.position.copy(sunDir).multiplyScalar(120);
     const isNight = hour < 6.5 || hour > 19.5;
+    const golden = (hour >= 6.5 && hour < 8.2) || (hour > 16.8 && hour <= 19.5);
     const dayK = Math.max(0, Math.min(1, elev)) * weatherMod;
-    this.sun.intensity = isNight ? 0.05 : 0.4 + dayK * 1.2;
-    this.hemi.intensity = isNight ? 0.18 : 0.5 + dayK * 0.5;
-    this.ambient.intensity = isNight ? 0.08 : 0.2;
-    // couleur du ciel
-    const sky = new THREE.Color();
-    if (isNight) sky.setHSL(0.62, 0.5, 0.08);
-    else {
-      const warm = (hour < 8 || hour > 17) ? 1 : 0;
-      sky.setHSL(0.58 - warm * 0.06, 0.5, (0.35 + dayK * 0.35));
-    }
-    this.scene.background.lerp(sky, 0.1);
+    this.sun.intensity = isNight ? 0.03 : (0.5 + dayK * 2.0) * (golden ? 0.8 : 1);
+    this.hemi.intensity = isNight ? 0.12 : 0.35 + dayK * 0.4;
+    this.ambient.intensity = isNight ? 0.06 : 0.12;
+    this.renderer.toneMappingExposure = isNight ? 0.5 : 1.05;
+    // l'environnement PBR n'éclaire qu'en journée (sinon la nuit reste trop claire)
+    const wantEnv = isNight ? null : (this.envRT ? this.envRT.texture : null);
+    if (this.scene.environment !== wantEnv) this.scene.environment = wantEnv;
+    // couleur du soleil (chaude au lever/coucher)
+    this.sun.color.setHSL(golden ? 0.07 : 0.12, 0.7, isNight ? 0.4 : 0.62);
+
+    // ciel : dégradé haut/bas selon l'heure
+    const top = new THREE.Color(), bot = new THREE.Color();
+    if (isNight) { top.setHSL(0.64, 0.55, 0.05); bot.setHSL(0.62, 0.4, 0.12); }
+    else if (golden) { top.setHSL(0.58, 0.45, 0.32 + dayK * 0.2); bot.setHSL(0.07, 0.7, 0.55); }
+    else { top.setHSL(0.58, 0.55, 0.28 + dayK * 0.22); bot.setHSL(0.55, 0.5, 0.7 + dayK * 0.12); }
+    if (this.sky) { this.sky.material.uniforms.top.value.lerp(top, 0.08); this.sky.material.uniforms.bottom.value.lerp(bot, 0.08); }
+    const horizon = bot.clone();
+    this.scene.background.lerp(horizon, 0.08);
     if (this.scene.fog) this.scene.fog.color.copy(this.scene.background);
-    this.sun.color.setHSL(0.1, 0.6, isNight ? 0.4 : 0.55 + (hour < 8 || hour > 17 ? -0.1 : 0.1));
+
+    // halo du soleil + nuages
+    if (this.sunGlow) {
+      this.sunGlow.position.copy(sunDir).multiplyScalar(300);
+      this.sunGlow.material.opacity = isNight ? 0 : (golden ? 1 : 0.7);
+      this.sunGlow.scale.setScalar(golden ? 95 : 70);
+    }
+    if (this.clouds) this.clouds.children.forEach(c => { c.material.opacity = isNight ? 0.25 : 0.85; c.material.color.setScalar(isNight ? 0.4 : 1); });
     this._night = isNight;
   }
 
   setWeather(weatherId) {
     this._weather = weatherId;
-    this.rain.visible = (weatherId === 'pluie' || weatherId === 'orage');
+    const wet = (weatherId === 'pluie' || weatherId === 'orage');
+    this.rain.visible = wet;
     this.snow.visible = (weatherId === 'neige');
-    const fogNear = { brouillard: 25, pluie: 55, orage: 40, neige: 45 }[weatherId] || 90;
+    const fogNear = { brouillard: 25, pluie: 70, orage: 55, neige: 55 }[weatherId] || 110;
     if (this.scene.fog) this.scene.fog.near = fogNear;
+    // sol mouillé : plus sombre, lisse et réfléchissant
+    if (this.surfaceMat) {
+      this.surfaceMat.roughness = wet ? 0.28 : (weatherId === 'neige' ? 0.85 : 0.95);
+      this.surfaceMat.metalness = wet ? 0.35 : 0.02;
+      this.surfaceMat.color.setScalar(wet ? 0.65 : (weatherId === 'neige' ? 1.25 : 1));
+    }
   }
 
   _stepWeather(dt) {
@@ -955,6 +1081,7 @@ export class Scene3D {
     for (const ent of [...this.vehicles]) this._stepVehicle(ent, dt);
     this._stepEmptyAnims(dt);
     this._stepWeather(dt);
+    if (this.clouds) this.clouds.children.forEach(c => { c.position.x += dt * 1.6; if (c.position.x > 330) c.position.x = -330; });
     this._updateLamps();
     // conteneurs pleins : gyrophare clignotant
     const blink = 0.5 + 0.5 * Math.sin(performance.now() / 150);

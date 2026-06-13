@@ -44,6 +44,9 @@ export function makeVisitor(state) {
   } else {
     vehicle = pick(VEHICLES);
   }
+  // couleur de carrosserie aléatoire (palette réaliste) — on clone la définition
+  const CAR_COLORS = ['#b0b4ba', '#2c3038', '#7a8089', '#c9ccd1', '#1f2a44', '#2e4a3a', '#6e1f1f', '#34506e', '#7a5230', '#9a2f2f', '#d8d8d8', '#3b3f46', '#1c5d7a'];
+  vehicle = { ...vehicle, color: CAR_COLORS[Math.floor(Math.random() * CAR_COLORS.length)] };
   // Déchets apportés
   const n = randInt(1, 3);
   const cargo = [];

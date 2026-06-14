@@ -1,0 +1,43 @@
+name: Déployer ÉcoParc sur GitHub Pages
+
+# Publie le jeu (site statique) sur GitHub Pages.
+# Une seule action manuelle est nécessaire la première fois :
+#   Repo → Settings → Pages → Build and deployment → Source : "GitHub Actions"
+# Ensuite chaque push sur cette branche redéploie automatiquement.
+
+on:
+  push:
+    branches:
+      - claude/container-park-simulator-555t0s
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurer Pages
+        uses: actions/configure-pages@v5
+
+      - name: Téléverser le site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Déployer
+        id: deployment
+        uses: actions/deploy-pages@v4

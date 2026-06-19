@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ÉclaDeCire — Bougies artisanales, faites avec passion</title>
+<meta name="description" content="ÉclaDeCire — bougies artisanales haut de gamme, coulées à la main en cire végétale. L'éclat d'un savoir-faire d'exception.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="mockbar">MAQUETTE DE VALIDATION · Pages : <a href="index.html">Accueil</a> · <a href="shop.html">Boutique</a> · <a href="product.html">Fiche produit</a></div>
+
+<!-- ============ HEADER ============ -->
+<header class="header">
+  <div class="topbar">Livraison offerte dès 60€ · Coulées à la main en France · <span>-10% sur votre 1ère commande</span></div>
+  <div class="container">
+    <nav class="nav">
+      <a class="nav__logo" href="index.html">
+        <img src="assets/logo.jpg" alt="ÉclaDeCire">
+        <b>ecladecire</b>
+      </a>
+      <ul class="nav__menu">
+        <li><a href="shop.html">Boutique</a></li>
+        <li><a href="shop.html">Collections</a></li>
+        <li><a href="product.html">Best-sellers</a></li>
+        <li><a href="#story">Notre atelier</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="nav__icons">
+        <button aria-label="Recherche"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></button>
+        <button aria-label="Compte"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></button>
+        <button aria-label="Panier"><svg class="icon" viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 016 0"/></svg><span class="nav__cart-count">2</span></button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <svg class="hero__leaf" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice">
+    <g fill="none" stroke="#BE9A66" stroke-width="1.2" opacity="0.35">
+      <path d="M120 600 C 200 500 240 380 230 250"/>
+      <path d="M230 420 C 300 400 340 360 360 320"/>
+      <path d="M225 350 C 160 330 120 290 100 250"/>
+      <path d="M232 300 C 300 280 330 240 345 200"/>
+    </g>
+  </svg>
+  <div class="container hero__inner">
+    <div class="hero__copy">
+      <span class="script">faites avec passion</span>
+      <h1 class="display-xl">L'éclat d'une<br>flamme artisanale</h1>
+      <p class="lead">Des bougies coulées à la main en cire végétale, parfumées à la fragrance de Grasse. Chaque mèche raconte un savoir-faire, chaque éclat une émotion.</p>
+      <div class="hero__cta">
+        <a href="shop.html" class="btn btn--primary">Découvrir la collection</a>
+        <a href="#story" class="btn btn--ghost">Notre histoire</a>
+      </div>
+      <div class="hero__stats">
+        <div class="hero__stat"><b>100%</b><small>Cire végétale</small></div>
+        <div class="hero__stat"><b>50h+</b><small>De combustion</small></div>
+        <div class="hero__stat"><b>4.9/5</b><small>+2 400 avis</small></div>
+      </div>
+    </div>
+    <div class="hero__media"><span>Visuel héro · flamme & botanique</span></div>
+  </div>
+</section>
+
+<!-- ============ RÉASSURANCE ============ -->
+<section class="assur">
+  <div class="container assur__grid">
+    <div class="assur__item"><svg class="icon" viewBox="0 0 24 24"><path d="M3 7h13v8H3z"/><path d="M16 10h4l1 3v2h-5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg><b>Livraison offerte</b><small>Dès 60€ d'achat</small></div>
+    <div class="assur__item"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c2 3 5 4 5 8a5 5 0 01-10 0c0-2 1-3 2-4"/></svg><b>Fait main</b><small>Coulé en France</small></div>
+    <div class="assur__item"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg><b>Paiement sécurisé</b><small>Stripe · PayPal · Pay</small></div>
+    <div class="assur__item"><svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 019-9 9 9 0 110 18 9 9 0 01-7-3"/><path d="M3 12v4h4"/></svg><b>Retours 30 jours</b><small>Satisfait ou remboursé</small></div>
+  </div>
+</section>
+
+<!-- ============ BEST-SELLERS ============ -->
+<section class="section container">
+  <div class="section-head">
+    <span class="eyebrow">Les préférées</span>
+    <h2>Nos best-sellers</h2>
+    <div class="divider"></div>
+    <p class="muted">Les fragrances qui ont conquis nos clients — édition coulée en petites séries.</p>
+  </div>
+  <div class="grid-products">
+    <article class="pcard">
+      <div class="pcard__media v1">
+        <span class="pcard__badge badge badge--gold">Best-seller</span>
+        <button class="pcard__fav" aria-label="Favori"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button>
+        <div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 38€</a></div>
+      </div>
+      <div class="pcard__body">
+        <div class="pcard__fam">Ambrée · Boisée</div>
+        <h3 class="pcard__name">Éclat d'Ambre</h3>
+        <p class="pcard__notes">Ambre · Vanille bourbon · Bois de santal</p>
+        <div class="pcard__foot"><span class="stars">★★★★★</span><span class="pcard__price">38€</span></div>
+      </div>
+    </article>
+    <article class="pcard">
+      <div class="pcard__media v2">
+        <span class="pcard__badge badge badge--sauge">Nouveauté</span>
+        <button class="pcard__fav" aria-label="Favori"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button>
+        <div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 34€</a></div>
+      </div>
+      <div class="pcard__body">
+        <div class="pcard__fam">Végétale · Fraîche</div>
+        <h3 class="pcard__name">Jardin de Sauge</h3>
+        <p class="pcard__notes">Sauge · Eucalyptus · Lavande</p>
+        <div class="pcard__foot"><span class="stars">★★★★★</span><span class="pcard__price">34€</span></div>
+      </div>
+    </article>
+    <article class="pcard">
+      <div class="pcard__media v3">
+        <button class="pcard__fav" aria-label="Favori"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button>
+        <div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 42€</a></div>
+      </div>
+      <div class="pcard__body">
+        <div class="pcard__fam">Florale · Poudrée</div>
+        <h3 class="pcard__name">Rose de Cire</h3>
+        <p class="pcard__notes">Rose de mai · Pivoine · Musc blanc</p>
+        <div class="pcard__foot"><span class="stars">★★★★★</span><span class="pcard__price">42€</span></div>
+      </div>
+    </article>
+    <article class="pcard">
+      <div class="pcard__media v4">
+        <span class="pcard__badge badge">Édition limitée</span>
+        <button class="pcard__fav" aria-label="Favori"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button>
+        <div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 46€</a></div>
+      </div>
+      <div class="pcard__body">
+        <div class="pcard__fam">Gourmande</div>
+        <h3 class="pcard__name">Nuit de Caramel</h3>
+        <p class="pcard__notes">Caramel · Fève tonka · Cardamome</p>
+        <div class="pcard__foot"><span class="stars">★★★★☆</span><span class="pcard__price"><s>52€</s>46€</span></div>
+      </div>
+    </article>
+  </div>
+  <div class="center" style="margin-top:48px"><a href="shop.html" class="btn btn--ghost">Voir toute la boutique</a></div>
+</section>
+
+<!-- ============ RÉCIT DE MARQUE ============ -->
+<section class="section story" id="story">
+  <div class="container story__grid">
+    <div style="position:relative">
+      <div class="story__media"><span>L'atelier · le geste de la coulée</span></div>
+      <img class="story__seal" src="assets/logo.jpg" alt="">
+    </div>
+    <div>
+      <span class="eyebrow">Notre savoir-faire</span>
+      <h2>Chaque bougie naît d'un geste, d'une patience, d'une passion</h2>
+      <p>Dans notre atelier, nous coulons chaque bougie à la main, en petites séries, à partir d'une cire 100% végétale et d'une mèche en coton naturel. Pas de paraffine, pas de raccourci — seulement le temps qu'il faut pour faire naître une flamme parfaite.</p>
+      <p>Nos fragrances sont composées à Grasse, capitale mondiale du parfum. De la sélection des matières à l'étiquetage final, tout est pensé pour révéler <em>l'éclat</em> d'un véritable savoir-faire artisanal.</p>
+      <div class="story__sign">L'équipe ÉclaDeCire</div>
+      <div style="margin-top:24px"><a href="#" class="btn btn--ghost">Découvrir l'atelier</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COLLECTIONS ============ -->
+<section class="section container">
+  <div class="section-head">
+    <span class="eyebrow">Par famille olfactive</span>
+    <h2>Explorez nos univers</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="collections">
+    <a class="coll c1" href="shop.html"><div class="coll__inner"><span class="eyebrow">12 senteurs</span><h3>Ambrées & Boisées</h3><small>Chaleureuses, enveloppantes →</small></div></a>
+    <a class="coll c2" href="shop.html"><div class="coll__inner"><span class="eyebrow">9 senteurs</span><h3>Végétales & Fraîches</h3><small>Vives, botaniques →</small></div></a>
+    <a class="coll c3" href="shop.html"><div class="coll__inner"><span class="eyebrow">8 senteurs</span><h3>Florales & Poudrées</h3><small>Délicates, romantiques →</small></div></a>
+  </div>
+</section>
+
+<!-- ============ AVIS ============ -->
+<section class="section reviews">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Ils nous font confiance</span>
+      <h2>4,9/5 · plus de 2 400 avis vérifiés</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="rev-grid">
+      <div class="rev"><div class="stars">★★★★★</div><p>« Une odeur incroyable qui embaume toute la pièce sans être entêtante. La finition du pot est superbe, on sent l'artisanat. »</p><div class="rev__author"><div class="rev__avatar"></div><div><b>Camille R.</b><small>Achat vérifié · Éclat d'Ambre</small></div></div></div>
+      <div class="rev"><div class="stars">★★★★★</div><p>« Offerte à ma mère, elle a adoré. L'emballage est digne d'une grande maison. Une combustion longue et régulière. »</p><div class="rev__author"><div class="rev__avatar"></div><div><b>Sophie L.</b><small>Achat vérifié · Coffret Découverte</small></div></div></div>
+      <div class="rev"><div class="stars">★★★★★</div><p>« Enfin une bougie artisanale qui tient ses promesses. Cire végétale, parfum subtil, je suis devenue fidèle. »</p><div class="rev__author"><div class="rev__avatar"></div><div><b>Marie D.</b><small>Achat vérifié · Jardin de Sauge</small></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSTAGRAM ============ -->
+<section class="section container">
+  <div class="section-head">
+    <span class="eyebrow">@ecladecire</span>
+    <h2>Rejoignez la communauté</h2>
+    <div class="divider"></div>
+    <p class="muted">Partagez vos instants lumière avec <strong>#ecladecire</strong></p>
+  </div>
+  <div class="insta-grid">
+    <div class="insta"></div><div class="insta"></div><div class="insta"></div>
+    <div class="insta"></div><div class="insta"></div><div class="insta"></div>
+  </div>
+  <div class="center" style="margin-top:40px"><a href="#" class="btn btn--ghost">Suivre sur Instagram</a></div>
+</section>
+
+<!-- ============ NEWSLETTER ============ -->
+<section class="section news">
+  <div class="container">
+    <span class="script">restons en lumière</span>
+    <h2 style="margin-top:8px">-10% sur votre première commande</h2>
+    <p class="muted" style="max-width:50ch;margin:14px auto 0">Inscrivez-vous pour recevoir nos nouveautés, éditions limitées et conseils d'allumage.</p>
+    <form onsubmit="return false">
+      <input class="field" type="email" placeholder="Votre adresse e-mail" required>
+      <button class="btn btn--primary" type="submit">Je m'inscris</button>
+    </form>
+    <small class="muted" style="font-size:12px">En vous inscrivant, vous acceptez notre politique de confidentialité.</small>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section container" id="faq" style="background:var(--cire-rose);border-radius:24px">
+  <div class="section-head">
+    <span class="eyebrow">Questions fréquentes</span>
+    <h2>Tout savoir avant d'allumer</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="faq">
+    <details class="faq__item" open><summary class="faq__q">Quelle est la durée de combustion ? <span>+</span></summary><div class="faq__a">Nos bougies offrent entre 45 et 60 heures de combustion selon le format. Pour une combustion optimale, laissez fondre la cire sur toute la surface dès le premier allumage.</div></details>
+    <details class="faq__item"><summary class="faq__q">Vos bougies sont-elles naturelles ? <span>+</span></summary><div class="faq__a">Oui. Nous utilisons exclusivement une cire 100% végétale, une mèche en coton naturel sans plomb, et des fragrances de Grasse sans CMR. Aucune paraffine.</div></details>
+    <details class="faq__item"><summary class="faq__q">Quels sont les délais de livraison ? <span>+</span></summary><div class="faq__a">Expédition sous 48h. Livraison en 2 à 4 jours ouvrés en France, offerte dès 60€ d'achat. Suivi de commande envoyé par e-mail.</div></details>
+    <details class="faq__item"><summary class="faq__q">Proposez-vous des coffrets cadeaux ? <span>+</span></summary><div class="faq__a">Bien sûr. Tous nos coffrets sont présentés dans un écrin signé ÉclaDeCire, avec une carte personnalisable et un emballage cadeau offert.</div></details>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <b>ecladecire</b>
+        <p>Bougies artisanales coulées à la main, faites avec passion. L'éclat d'un savoir-faire d'exception.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Instagram"><svg class="icon" viewBox="0 0 24 24" style="width:18px;height:18px"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="Pinterest"><svg class="icon" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M12 3a9 9 0 00-3 17.5c-.1-1 0-2 .2-3l1.2-5s-.3-.6-.3-1.5c0-1.4.8-2.4 1.8-2.4.8 0 1.3.6 1.3 1.4 0 .9-.6 2.2-.9 3.4-.2 1 .5 1.8 1.5 1.8 1.8 0 3-2.3 3-5 0-2-1.4-3.6-4-3.6a4.4 4.4 0 00-4.6 4.4c0 .9.3 1.5.7 2 .2.2.2.3.1.5l-.2.9c-.1.3-.3.4-.6.2"/></svg></a>
+          <a href="#" aria-label="TikTok"><svg class="icon" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M15 4c.5 2 2 3.5 4 3.8v3c-1.6 0-3-.5-4-1.3V15a5.5 5.5 0 11-5.5-5.5c.3 0 .6 0 .9.1v3.1a2.5 2.5 0 102 2.4V4z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer__col"><h4>Boutique</h4><a href="shop.html">Toutes les bougies</a><a href="shop.html">Best-sellers</a><a href="shop.html">Nouveautés</a><a href="shop.html">Coffrets cadeaux</a><a href="shop.html">Cartes cadeaux</a></div>
+      <div class="footer__col"><h4>La maison</h4><a href="#story">Notre histoire</a><a href="#story">L'atelier</a><a href="#">Engagements</a><a href="#">Journal</a><a href="#">Nous contacter</a></div>
+      <div class="footer__col"><h4>Aide</h4><a href="#faq">FAQ</a><a href="#">Livraison</a><a href="#">Retours & échanges</a><a href="#">Suivi de commande</a><a href="#">Programme fidélité</a></div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 ÉclaDeCire · Mentions légales · CGV · Confidentialité</span>
+      <div class="footer__pay"><span>VISA</span><span>MASTERCARD</span><span>PAYPAL</span><span>APPLE PAY</span><span>G PAY</span></div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

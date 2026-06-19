@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boutique — ÉclaDeCire</title>
+<meta name="description" content="Toutes nos bougies artisanales : ambrées, boisées, florales, végétales. Filtrez par famille olfactive, intensité et format.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="mockbar">MAQUETTE DE VALIDATION · Pages : <a href="index.html">Accueil</a> · <a href="shop.html">Boutique</a> · <a href="product.html">Fiche produit</a></div>
+
+<header class="header">
+  <div class="topbar">Livraison offerte dès 60€ · Coulées à la main en France · <span>-10% sur votre 1ère commande</span></div>
+  <div class="container">
+    <nav class="nav">
+      <a class="nav__logo" href="index.html"><img src="assets/logo.jpg" alt="ÉclaDeCire"><b>ecladecire</b></a>
+      <ul class="nav__menu">
+        <li><a href="shop.html">Boutique</a></li>
+        <li><a href="shop.html">Collections</a></li>
+        <li><a href="product.html">Best-sellers</a></li>
+        <li><a href="index.html#story">Notre atelier</a></li>
+        <li><a href="index.html#faq">FAQ</a></li>
+      </ul>
+      <div class="nav__icons">
+        <button aria-label="Recherche"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></button>
+        <button aria-label="Compte"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></button>
+        <button aria-label="Panier"><svg class="icon" viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 016 0"/></svg><span class="nav__cart-count">2</span></button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="shop__head">
+  <span class="eyebrow">La boutique</span>
+  <h1 class="display-l" style="margin-top:10px">Toutes nos bougies</h1>
+  <div class="divider"></div>
+  <p class="muted" style="max-width:54ch;margin:0 auto">29 fragrances coulées à la main — trouvez l'éclat qui vous ressemble.</p>
+</section>
+
+<div class="container">
+  <div class="shop__layout">
+
+    <!-- FILTRES -->
+    <aside class="filters">
+      <h4>Famille olfactive</h4>
+      <div>
+        <span class="chip is-active">Toutes</span><span class="chip">Ambrée</span><span class="chip">Boisée</span>
+        <span class="chip">Florale</span><span class="chip">Végétale</span><span class="chip">Gourmande</span><span class="chip">Fraîche</span>
+      </div>
+      <h4>Intensité</h4>
+      <input type="range" min="1" max="5" value="3">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--texte-doux);letter-spacing:.1em">
+        <span>Délicate</span><span>Intense</span>
+      </div>
+      <h4>Format</h4>
+      <label><input type="checkbox" checked> Bougie 180g</label>
+      <label><input type="checkbox"> Bougie 300g</label>
+      <label><input type="checkbox"> Recharge</label>
+      <label><input type="checkbox"> Coffret découverte</label>
+      <h4>Prix</h4>
+      <input type="range" min="20" max="70" value="55">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--texte-doux)">
+        <span>20€</span><span>70€</span>
+      </div>
+      <h4>Disponibilité</h4>
+      <label><input type="checkbox"> En stock</label>
+      <label><input type="checkbox"> Éditions limitées</label>
+      <div style="margin-top:28px"><button class="btn btn--ghost btn--block">Appliquer les filtres</button></div>
+    </aside>
+
+    <!-- GRILLE -->
+    <div>
+      <div class="shop__toolbar">
+        <div class="search">
+          <svg class="icon" viewBox="0 0 24 24" style="width:16px;height:16px"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <input type="text" placeholder="Rechercher une senteur…">
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span class="muted" style="font-size:13px">29 produits</span>
+          <select class="select">
+            <option>Trier : Popularité</option>
+            <option>Nouveautés</option>
+            <option>Prix croissant</option>
+            <option>Prix décroissant</option>
+            <option>Mieux notés</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="shop__grid">
+        <article class="pcard"><div class="pcard__media v1"><span class="pcard__badge badge badge--gold">Best-seller</span><button class="pcard__fav"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button><div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 38€</a></div></div><div class="pcard__body"><div class="pcard__fam">Ambrée · Boisée</div><h3 class="pcard__name">Éclat d'Ambre</h3><p class="pcard__notes">Ambre · Vanille · Santal</p><div class="pcard__foot"><span class="stars">★★★★★</span><span class="pcard__price">38€</span></div></div></article>
+        <article class="pcard"><div class="pcard__media v2"><span class="pcard__badge badge badge--sauge">Nouveauté</span><button class="pcard__fav"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button><div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 34€</a></div></div><div class="pcard__body"><div class="pcard__fam">Végétale · Fraîche</div><h3 class="pcard__name">Jardin de Sauge</h3><p class="pcard__notes">Sauge · Eucalyptus · Lavande</p><div class="pcard__foot"><span class="stars">★★★★★</span><span class="pcard__price">34€</span></div></div></article>
+        <article class="pcard"><div class="pcard__media v3"><button class="pcard__fav"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button><div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 42€</a></div></div><div class="pcard__body"><div class="pcard__fam">Florale · Poudrée</div><h3 class="pcard__name">Rose de Cire</h3><p class="pcard__notes">Rose de mai · Pivoine · Musc</p><div class="pcard__foot"><span class="stars">★★★★★</span><span class="pcard__price">42€</span></div></div></article>
+        <article class="pcard"><div class="pcard__media v4"><span class="pcard__badge badge">Édition limitée</span><button class="pcard__fav"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button><div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 46€</a></div></div><div class="pcard__body"><div class="pcard__fam">Gourmande</div><h3 class="pcard__name">Nuit de Caramel</h3><p class="pcard__notes">Caramel · Tonka · Cardamome</p><div class="pcard__foot"><span class="stars">★★★★☆</span><span class="pcard__price"><s>52€</s>46€</span></div></div></article>
+        <article class="pcard"><div class="pcard__media v2"><button class="pcard__fav"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button><div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 36€</a></div></div><div class="pcard__body"><div class="pcard__fam">Fraîche</div><h3 class="pcard__name">Brise de Lin</h3><p class="pcard__notes">Coton · Bergamote · Muguet</p><div class="pcard__foot"><span class="stars">★★★★★</span><span class="pcard__price">36€</span></div></div></article>
+        <article class="pcard"><div class="pcard__media v1"><button class="pcard__fav"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button><div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 40€</a></div></div><div class="pcard__body"><div class="pcard__fam">Boisée</div><h3 class="pcard__name">Cèdre & Fumée</h3><p class="pcard__notes">Cèdre · Vétiver · Cuir</p><div class="pcard__foot"><span class="stars">★★★★★</span><span class="pcard__price">40€</span></div></div></article>
+        <article class="pcard"><div class="pcard__media v3"><span class="pcard__badge badge badge--gold">Best-seller</span><button class="pcard__fav"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button><div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 44€</a></div></div><div class="pcard__body"><div class="pcard__fam">Florale</div><h3 class="pcard__name">Fleur d'Oranger</h3><p class="pcard__notes">Néroli · Jasmin · Miel</p><div class="pcard__foot"><span class="stars">★★★★★</span><span class="pcard__price">44€</span></div></div></article>
+        <article class="pcard"><div class="pcard__media v4"><button class="pcard__fav"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button><div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 39€</a></div></div><div class="pcard__body"><div class="pcard__fam">Ambrée</div><h3 class="pcard__name">Or & Encens</h3><p class="pcard__notes">Encens · Ambre gris · Myrrhe</p><div class="pcard__foot"><span class="stars">★★★★☆</span><span class="pcard__price">39€</span></div></div></article>
+        <article class="pcard"><div class="pcard__media v2"><span class="pcard__badge badge badge--soft">Coffret</span><button class="pcard__fav"><svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg></button><div class="pcard__add"><a href="product.html" class="btn btn--primary btn--block">Ajouter — 59€</a></div></div><div class="pcard__body"><div class="pcard__fam">Coffret découverte</div><h3 class="pcard__name">Trio Signature</h3><p class="pcard__notes">3 mini-bougies · écrin cadeau</p><div class="pcard__foot"><span class="stars">★★★★★</span><span class="pcard__price">59€</span></div></div></article>
+      </div>
+
+      <div class="center" style="margin-top:56px"><button class="btn btn--ghost">Charger plus de produits</button></div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer" style="margin-top:96px">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand"><b>ecladecire</b><p>Bougies artisanales coulées à la main, faites avec passion.</p></div>
+      <div class="footer__col"><h4>Boutique</h4><a href="shop.html">Toutes les bougies</a><a href="shop.html">Best-sellers</a><a href="shop.html">Coffrets cadeaux</a></div>
+      <div class="footer__col"><h4>La maison</h4><a href="index.html#story">Notre histoire</a><a href="#">L'atelier</a><a href="#">Contact</a></div>
+      <div class="footer__col"><h4>Aide</h4><a href="index.html#faq">FAQ</a><a href="#">Livraison</a><a href="#">Retours</a></div>
+    </div>
+    <div class="footer__bottom"><span>© 2026 ÉclaDeCire · Mentions légales · CGV</span><div class="footer__pay"><span>VISA</span><span>MASTERCARD</span><span>PAYPAL</span><span>APPLE PAY</span></div></div>
+  </div>
+</footer>
+
+</body>
+</html>

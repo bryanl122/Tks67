@@ -8,4 +8,5 @@ env/
 *.jpeg
 *.webp
 !templates/**
+history/
 .DS_Store

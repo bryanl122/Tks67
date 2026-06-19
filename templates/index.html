@@ -93,6 +93,19 @@
       background: #11131c; border: 1px solid var(--border); color: var(--muted);
       border-radius: 20px; padding: 6px 12px; font-size: .8rem; cursor: pointer;
     }
+    .muted { color: var(--muted); font-size: .85rem; }
+    .history {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px;
+    }
+    .hitem {
+      background: #11131c; border: 1px solid var(--border); border-radius: 10px;
+      overflow: hidden; cursor: pointer; display: flex; flex-direction: column;
+    }
+    .hitem img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+    .hitem span {
+      font-size: .68rem; color: var(--muted); padding: 5px 6px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
   </style>
 </head>
 <body>
@@ -154,6 +167,16 @@
     <a class="download" id="download" download="edited.png">⬇ Télécharger</a>
   </div>
 
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <label style="margin:0">Historique</label>
+      <span class="chip" id="clearHistory">Vider</span>
+    </div>
+    <div id="history" class="history">
+      <div class="muted" id="historyEmpty">Aucune modification pour l'instant.</div>
+    </div>
+  </div>
+
   <script>
     const fileInput = document.getElementById('file');
     const drop = document.getElementById('drop');
@@ -179,8 +202,50 @@
       go.disabled = false;
     });
 
-    document.querySelectorAll('.chip').forEach(c =>
+    document.querySelectorAll('.chips .chip').forEach(c =>
       c.addEventListener('click', () => { instruction.value = c.textContent; }));
+
+    const historyEl = document.getElementById('history');
+    const historyEmpty = document.getElementById('historyEmpty');
+
+    async function loadHistory() {
+      try {
+        const res = await fetch('/history');
+        const { entries } = await res.json();
+        historyEl.innerHTML = '';
+        if (!entries.length) {
+          historyEl.appendChild(historyEmpty);
+          historyEmpty.style.display = 'block';
+          return;
+        }
+        for (const e of entries) {
+          const div = document.createElement('div');
+          div.className = 'hitem';
+          const img = document.createElement('img');
+          img.src = '/history/' + e.id;
+          img.loading = 'lazy';
+          const span = document.createElement('span');
+          span.textContent = e.instruction;
+          div.appendChild(img);
+          div.appendChild(span);
+          div.addEventListener('click', () => {
+            result.src = '/history/' + e.id;
+            download.href = '/history/' + e.id;
+            resultCard.style.display = 'block';
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+          });
+          historyEl.appendChild(div);
+        }
+      } catch (_) { /* historique non critique */ }
+    }
+
+    document.getElementById('clearHistory').addEventListener('click', async () => {
+      if (!confirm('Vider tout l\'historique ?')) return;
+      await fetch('/history/clear', { method: 'POST' });
+      loadHistory();
+    });
+
+    loadHistory();
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -206,6 +271,7 @@
         resultCard.style.display = 'block';
         status.textContent = '';
         resultCard.scrollIntoView({ behavior: 'smooth' });
+        loadHistory();
       } catch (ex) {
         err.textContent = ex.message;
         status.textContent = '';

@@ -33,6 +33,11 @@ pip install -r requirements.txt
 python app.py
 ```
 
+Ou via les lanceurs (safety checker désactivé) :
+
+- **Windows** : double-clique sur `run.bat`
+- **Linux / macOS** : `./run.sh` (au besoin `chmod +x run.sh` une fois)
+
 La console affiche deux adresses, par exemple :
 
 ```
@@ -62,12 +67,27 @@ C'est long une seule fois, ensuite il est mis en cache.
 | Fidélité image   | Plus = le résultat reste plus proche de la photo d'origine.  |
 | Seed             | Fixe la graine aléatoire pour reproduire un résultat.        |
 
+## Historique
+
+Chaque modification réussie est enregistrée localement dans `history/` (image +
+consigne). La galerie en bas de l'interface te laisse revoir, ré-télécharger ou
+vider tes éditions passées. Les 100 dernières sont conservées. Rien n'est envoyé
+en ligne ; le dossier `history/` est ignoré par git.
+
+## Gratuit et illimité
+
+L'IA tourne **sur ta machine** : aucun compte, aucun quota, aucun paiement,
+aucune limite de nombre d'images. La seule contrainte est la vitesse de ton
+matériel.
+
 ## Structure
 
 ```
 app.py                 # serveur Flask + accès réseau local
 editor.py              # moteur d'édition (chargement du modèle, traitement)
+history.py             # stockage local des modifications
 templates/index.html   # interface web mobile-friendly
+run.sh / run.bat       # lanceurs (safety checker désactivé)
 requirements.txt
 ```
 

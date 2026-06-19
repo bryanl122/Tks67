@@ -20,6 +20,7 @@ from flask import Flask, jsonify, render_template, request, send_file
 from io import BytesIO
 
 import editor
+import history
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 25 * 1024 * 1024  # 25 Mo max par upload
@@ -72,12 +73,46 @@ def edit():
         traceback.print_exc()
         return jsonify(error="Le traitement a échoué côté serveur."), 500
 
+    # Sauvegarde dans l'historique (best effort : ne bloque pas la réponse).
+    try:
+        history.add_entry(
+            result,
+            instruction,
+            {
+                "steps": steps,
+                "image_guidance": image_guidance,
+                "text_guidance": text_guidance,
+                "seed": seed,
+            },
+        )
+    except Exception:  # noqa: BLE001
+        traceback.print_exc()
+
     return send_file(
         BytesIO(result),
         mimetype="image/png",
         as_attachment=False,
         download_name="edited.png",
     )
+
+
+@app.route("/history")
+def history_list():
+    return jsonify(entries=history.list_entries())
+
+
+@app.route("/history/<entry_id>")
+def history_image(entry_id):
+    path = history.get_file_path(entry_id)
+    if path is None:
+        return jsonify(error="Introuvable."), 404
+    return send_file(path, mimetype="image/png")
+
+
+@app.route("/history/clear", methods=["POST"])
+def history_clear():
+    history.clear()
+    return jsonify(status="ok")
 
 
 @app.route("/health")

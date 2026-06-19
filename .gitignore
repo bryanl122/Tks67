@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+*.png
+*.jpg
+*.jpeg
+*.webp
+!templates/**
+.DS_Store

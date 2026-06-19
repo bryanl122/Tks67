@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Éditeur photo IA</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --card: #1a1d28;
+      --accent: #6c5ce7;
+      --accent-2: #8b7cf6;
+      --text: #e7e9f0;
+      --muted: #9aa0b4;
+      --border: #2a2e3d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    h1 { font-size: 1.4rem; margin: 8px 0 4px; }
+    .sub { color: var(--muted); font-size: .85rem; margin-bottom: 20px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 6px; }
+    .drop {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 28px 16px;
+      text-align: center;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .drop.active { border-color: var(--accent); color: var(--text); }
+    input[type="file"] { display: none; }
+    textarea {
+      width: 100%;
+      background: #11131c;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 64px;
+    }
+    .preview { width: 100%; border-radius: 12px; margin-top: 12px; display: none; }
+    button {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    details { margin-top: 12px; }
+    summary { color: var(--muted); font-size: .85rem; cursor: pointer; }
+    .row { display: flex; gap: 12px; margin-top: 12px; }
+    .row > div { flex: 1; }
+    .row input { width: 100%; }
+    .err { color: #ff7675; font-size: .85rem; margin-top: 10px; min-height: 1em; }
+    .status { color: var(--muted); font-size: .85rem; margin-top: 10px; }
+    .spinner {
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid var(--border); border-top-color: var(--accent-2);
+      border-radius: 50%; animation: spin .8s linear infinite; vertical-align: -2px;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    a.download {
+      display: block; text-align: center; margin-top: 12px;
+      color: var(--accent-2); text-decoration: none; font-weight: 600;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .chip {
+      background: #11131c; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 20px; padding: 6px 12px; font-size: .8rem; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 Éditeur photo IA</h1>
+  <div class="sub">Uploade une photo, décris la modification, l'IA la réalise.</div>
+
+  <form id="form">
+    <div class="card">
+      <label>1. Ta photo</label>
+      <div class="drop" id="drop">Touche ici pour choisir une image 📷</div>
+      <input type="file" id="file" name="image" accept="image/png,image/jpeg,image/webp" />
+      <img id="preview" class="preview" alt="aperçu" />
+    </div>
+
+    <div class="card">
+      <label>2. La modification souhaitée</label>
+      <textarea id="instruction" name="instruction"
+        placeholder="ex : rends le ciel orange au coucher de soleil"></textarea>
+      <div class="chips">
+        <span class="chip">transforme en peinture à l'huile</span>
+        <span class="chip">ambiance hiver enneigé</span>
+        <span class="chip">style aquarelle</span>
+        <span class="chip">rends-le nocturne</span>
+      </div>
+
+      <details>
+        <summary>Réglages avancés</summary>
+        <div class="row">
+          <div>
+            <label>Étapes (qualité)</label>
+            <input type="number" name="steps" value="20" min="5" max="50" />
+          </div>
+          <div>
+            <label>Force consigne</label>
+            <input type="number" name="text_guidance" value="7.5" step="0.5" min="1" max="15" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>Fidélité image</label>
+            <input type="number" name="image_guidance" value="1.5" step="0.1" min="1" max="2.5" />
+          </div>
+          <div>
+            <label>Seed (option.)</label>
+            <input type="number" name="seed" placeholder="aléatoire" />
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <button type="submit" id="go" disabled>Modifier l'image ✨</button>
+    <div class="err" id="err"></div>
+    <div class="status" id="status"></div>
+  </form>
+
+  <div class="card" id="resultCard" style="display:none">
+    <label>Résultat</label>
+    <img id="result" class="preview" style="display:block" alt="résultat" />
+    <a class="download" id="download" download="edited.png">⬇ Télécharger</a>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('file');
+    const drop = document.getElementById('drop');
+    const preview = document.getElementById('preview');
+    const go = document.getElementById('go');
+    const form = document.getElementById('form');
+    const err = document.getElementById('err');
+    const status = document.getElementById('status');
+    const resultCard = document.getElementById('resultCard');
+    const result = document.getElementById('result');
+    const download = document.getElementById('download');
+    const instruction = document.getElementById('instruction');
+
+    drop.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', () => {
+      const f = fileInput.files[0];
+      if (!f) return;
+      drop.classList.add('active');
+      drop.textContent = f.name;
+      preview.src = URL.createObjectURL(f);
+      preview.style.display = 'block';
+      go.disabled = false;
+    });
+
+    document.querySelectorAll('.chip').forEach(c =>
+      c.addEventListener('click', () => { instruction.value = c.textContent; }));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      err.textContent = '';
+      if (!fileInput.files[0]) { err.textContent = 'Choisis une image.'; return; }
+      if (!instruction.value.trim()) { err.textContent = 'Décris la modification.'; return; }
+
+      go.disabled = true;
+      resultCard.style.display = 'none';
+      status.innerHTML = '<span class="spinner"></span>Traitement en cours… (ça peut prendre un moment)';
+
+      try {
+        const data = new FormData(form);
+        const res = await fetch('/edit', { method: 'POST', body: data });
+        if (!res.ok) {
+          const j = await res.json().catch(() => ({}));
+          throw new Error(j.error || 'Erreur serveur.');
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        result.src = url;
+        download.href = url;
+        resultCard.style.display = 'block';
+        status.textContent = '';
+        resultCard.scrollIntoView({ behavior: 'smooth' });
+      } catch (ex) {
+        err.textContent = ex.message;
+        status.textContent = '';
+      } finally {
+        go.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

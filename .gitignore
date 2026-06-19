@@ -1,0 +1,14 @@
+# Dépendances
+node_modules/
+
+# Artefacts Next.js (développement à venir)
+.next/
+out/
+dist/
+build/
+
+# Divers
+.DS_Store
+*.log
+.env*
+!.env.example

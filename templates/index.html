@@ -6,160 +6,118 @@
   <title>Éditeur photo IA</title>
   <style>
     :root {
-      --bg: #000000;
-      --panel: #121212;
-      --panel-2: #1c1c1e;
-      --border: #2a2a2c;
-      --text: #ffffff;
-      --muted: #8e8e93;
-      --blue: #2f6bff;
-      --blue-2: #4f86ff;
+      --bg: #000; --panel: #121212; --panel-2: #1c1c1e; --border: #2a2a2c;
+      --text: #fff; --muted: #8e8e93; --blue: #2f6bff; --blue-2: #4f86ff;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { height: 100%; margin: 0; }
     body {
-      background: var(--bg);
-      color: var(--text);
+      background: var(--bg); color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      display: flex; flex-direction: column; overflow: hidden;
     }
 
-    /* ---------- Top bar ---------- */
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px 10px;
-    }
+    /* Top bar */
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; }
     .icon-btn {
-      width: 38px; height: 38px; border-radius: 50%;
-      background: var(--panel-2); border: none; color: var(--text);
-      font-size: 17px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
+      width: 38px; height: 38px; border-radius: 50%; background: var(--panel-2);
+      border: none; color: var(--text); font-size: 17px;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
-    .toggle {
-      display: flex; background: var(--panel-2); border-radius: 22px; padding: 4px;
-    }
-    .toggle span {
-      padding: 7px 18px; border-radius: 18px; font-size: 15px; color: var(--muted);
-    }
+    .toggle { display: flex; background: var(--panel-2); border-radius: 22px; padding: 4px; }
+    .toggle span { padding: 7px 20px; border-radius: 18px; font-size: 15px; color: var(--muted); cursor: pointer; }
     .toggle span.active { background: #3a3a3c; color: var(--text); }
 
-    /* ---------- Main area ---------- */
-    .main {
-      flex: 1; position: relative; overflow-y: auto;
-      display: flex; align-items: center; justify-content: center;
-      padding: 16px;
-    }
-    .logo {
-      width: 90px; height: 90px; opacity: .18;
-    }
+    /* Main */
+    .main { flex: 1; position: relative; overflow-y: auto; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .logo { width: 90px; height: 90px; opacity: .18; }
     .stage { width: 100%; max-width: 520px; display: none; }
     .stage.show { display: block; }
     .stage img { width: 100%; border-radius: 16px; display: block; }
     .stage .cap { color: var(--muted); font-size: 13px; margin: 10px 2px; }
-    .stage a.dl {
-      display: inline-block; color: var(--blue-2); text-decoration: none;
-      font-weight: 600; font-size: 14px;
-    }
-    .spinner {
-      width: 18px; height: 18px; border: 2px solid #3a3a3c; border-top-color: var(--blue-2);
-      border-radius: 50%; animation: spin .8s linear infinite; display: inline-block;
-      vertical-align: -3px; margin-right: 8px;
-    }
+    .stage a.dl { display: inline-block; color: var(--blue-2); text-decoration: none; font-weight: 600; font-size: 14px; }
+    .spinner { width: 18px; height: 18px; border: 2px solid #3a3a3c; border-top-color: var(--blue-2);
+      border-radius: 50%; animation: spin .8s linear infinite; display: inline-block; vertical-align: -3px; margin-right: 8px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .center-msg { color: var(--muted); font-size: 14px; text-align: center; }
 
-    /* ---------- Bottom dock ---------- */
+    /* Dock */
     .dock { padding: 8px 12px calc(12px + env(safe-area-inset-bottom)); }
     .actions { display: flex; gap: 10px; margin-bottom: 10px; }
     .pill {
-      flex: 1; background: var(--panel); border: 1px solid var(--border);
-      color: var(--text); border-radius: 16px; padding: 12px;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      flex: 1; background: var(--panel); border: 1px solid var(--border); color: var(--text);
+      border-radius: 16px; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;
       font-size: 14px; cursor: pointer;
     }
     .pill.attached { border-color: var(--blue); color: var(--blue-2); }
-    .composer {
-      background: var(--panel); border: 1px solid var(--border); border-radius: 24px;
-      padding: 6px 6px 6px 14px; display: flex; align-items: center; gap: 8px;
-    }
-    .composer .plus {
-      width: 32px; height: 32px; border-radius: 50%; background: var(--panel-2);
-      border: none; color: var(--text); font-size: 20px; cursor: pointer; flex: none;
-    }
-    .composer input[type=text] {
-      flex: 1; background: transparent; border: none; outline: none;
-      color: var(--text); font-size: 16px; padding: 6px 0;
-    }
+    .composer { background: var(--panel); border: 1px solid var(--border); border-radius: 24px;
+      padding: 6px 6px 6px 14px; display: flex; align-items: center; gap: 8px; }
+    .composer .plus { width: 32px; height: 32px; border-radius: 50%; background: var(--panel-2);
+      border: none; color: var(--text); font-size: 20px; cursor: pointer; flex: none; }
+    .composer input[type=text] { flex: 1; background: transparent; border: none; outline: none;
+      color: var(--text); font-size: 16px; padding: 6px 0; }
     .composer input::placeholder { color: var(--muted); }
-    .send {
-      width: 38px; height: 38px; border-radius: 50%; flex: none;
-      background: #3a3a3c; border: none; color: var(--text); font-size: 18px;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-    }
-    .send.ready { background: var(--blue); }
+    .rapide { display: flex; align-items: center; gap: 5px; background: var(--panel-2); color: var(--muted);
+      border-radius: 16px; padding: 6px 10px; font-size: 13px; flex: none; }
+    .mic { width: 34px; height: 34px; border-radius: 50%; background: var(--panel-2); border: none;
+      color: var(--text); font-size: 16px; flex: none; cursor: pointer; }
+    .parler { background: #fff; color: #000; border: none; border-radius: 20px; padding: 9px 16px;
+      font-size: 14px; font-weight: 600; flex: none; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .send { width: 38px; height: 38px; border-radius: 50%; flex: none; background: #3a3a3c; border: none;
+      color: var(--text); font-size: 18px; cursor: pointer; display: none; align-items: center; justify-content: center; }
+    .send.ready { background: var(--blue); display: flex; }
+    .composer.editing .rapide, .composer.editing .mic, .composer.editing .parler { display: none; }
     .err { color: #ff6b6b; font-size: 13px; text-align: center; min-height: 1em; margin-top: 6px; }
     input[type=file] { display: none; }
 
-    /* ---------- Attach menu (popup like Grok) ---------- */
-    .attach-menu {
-      position: fixed; left: 12px; right: 12px; bottom: calc(78px + env(safe-area-inset-bottom));
+    /* Attach menu */
+    .attach-menu { position: fixed; left: 12px; right: 12px; bottom: calc(78px + env(safe-area-inset-bottom));
       background: #1e1e1ee6; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
       border: 1px solid var(--border); border-radius: 22px; padding: 6px;
       transform: translateY(12px) scale(.98); opacity: 0; pointer-events: none;
-      transition: opacity .18s, transform .18s; transform-origin: bottom left; z-index: 12;
-      max-width: 460px;
-    }
+      transition: opacity .18s, transform .18s; transform-origin: bottom left; z-index: 12; max-width: 460px; }
     .attach-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-    .am-item {
-      display: flex; align-items: center; gap: 18px; padding: 16px 18px;
-      font-size: 18px; color: var(--text); cursor: pointer; border-radius: 16px;
-    }
+    .am-item { display: flex; align-items: center; gap: 18px; padding: 16px 18px; font-size: 18px;
+      color: var(--text); cursor: pointer; border-radius: 16px; }
     .am-item:active { background: #ffffff14; }
     .am-item + .am-item { border-top: 1px solid #ffffff10; }
     .am-item .ai { width: 26px; text-align: center; font-size: 20px; color: #c7c7cc; }
 
-    /* ---------- Drawer ---------- */
-    .scrim {
-      position: fixed; inset: 0; background: rgba(0,0,0,.5); opacity: 0;
-      pointer-events: none; transition: opacity .25s; z-index: 10;
-    }
+    /* Drawer */
+    .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.5); opacity: 0; pointer-events: none;
+      transition: opacity .25s; z-index: 10; }
     .scrim.open { opacity: 1; pointer-events: auto; }
-    .drawer {
-      position: fixed; top: 0; left: 0; bottom: 0; width: 84%; max-width: 360px;
-      background: #0a0a0a; border-right: 1px solid var(--border);
-      transform: translateX(-100%); transition: transform .25s; z-index: 11;
-      display: flex; flex-direction: column; padding: 16px 14px calc(14px + env(safe-area-inset-bottom));
-    }
+    .drawer { position: fixed; top: 0; left: 0; bottom: 0; width: 84%; max-width: 360px; background: #0a0a0a;
+      border-right: 1px solid var(--border); transform: translateX(-100%); transition: transform .25s; z-index: 11;
+      display: flex; flex-direction: column; padding: 16px 14px calc(14px + env(safe-area-inset-bottom)); }
     .drawer.open { transform: translateX(0); }
     .profile { display: flex; align-items: center; gap: 12px; margin: 8px 4px 18px; }
     .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--panel-2);
       display: flex; align-items: center; justify-content: center; font-size: 18px; }
-    .profile b { font-size: 18px; }
-    .promo {
-      background: linear-gradient(135deg, #2f6bff, #1b3fb0); border-radius: 18px;
-      padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 18px;
-    }
+    .profile b { font-size: 18px; flex: 1; }
+    .promo { background: linear-gradient(135deg, #2f6bff, #1b3fb0); border-radius: 18px; padding: 14px 16px;
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
     .promo .t b { font-size: 17px; }
     .promo .t span { display: block; font-size: 12px; color: #d7e0ff; }
-    .promo button {
-      background: #ffffff22; border: none; color: #fff; border-radius: 18px;
-      padding: 9px 14px; font-weight: 600; font-size: 13px; cursor: pointer;
-    }
-    .menu-row { display: flex; align-items: center; gap: 12px; padding: 12px 4px; font-size: 17px; cursor: pointer; }
-    .menu-row .mi { width: 24px; text-align: center; }
+    .promo button { background: #ffffff22; border: none; color: #fff; border-radius: 18px; padding: 9px 14px;
+      font-weight: 600; font-size: 13px; cursor: pointer; }
+    .menu-row { display: flex; align-items: center; gap: 14px; padding: 12px 4px; font-size: 17px; cursor: pointer; }
+    .menu-row .mi { width: 24px; text-align: center; font-size: 18px; color: #c7c7cc; }
     .section-title { color: var(--muted); font-size: 13px; margin: 16px 4px 8px; }
     .hist { flex: 1; overflow-y: auto; }
     .hrow { display: flex; align-items: center; gap: 12px; padding: 10px 4px; cursor: pointer; border-radius: 10px; }
     .hrow:active { background: var(--panel); }
     .hrow img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex: none; }
     .hrow span { font-size: 14px; color: #d0d0d2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .empty { color: var(--muted); font-size: 14px; padding: 16px 4px; }
     .drawer-foot { display: flex; gap: 10px; align-items: center; padding-top: 10px; border-top: 1px solid var(--border); }
     .search { flex: 1; background: var(--panel-2); border: none; border-radius: 20px; padding: 10px 14px;
       color: var(--text); font-size: 15px; outline: none; }
-    .empty { color: var(--muted); font-size: 14px; padding: 16px 4px; }
+
+    /* Toast */
+    .toast { position: fixed; left: 50%; bottom: 120px; transform: translateX(-50%) translateY(20px);
+      background: #2c2c2e; color: #fff; padding: 10px 16px; border-radius: 20px; font-size: 13px;
+      opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 20; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
@@ -167,8 +125,11 @@
   <!-- Top bar -->
   <div class="topbar">
     <button class="icon-btn" id="menuBtn" aria-label="menu">&#9776;</button>
-    <div class="toggle"><span class="active">Modifier une image</span></div>
-    <button class="icon-btn" id="newBtn" aria-label="nouveau">&#10227;</button>
+    <div class="toggle">
+      <span class="active" data-tab="chat">Chat</span>
+      <span data-tab="imagine">Imagine</span>
+    </div>
+    <button class="icon-btn" id="newBtn" aria-label="nouveau">&#9998;</button>
   </div>
 
   <!-- Main stage -->
@@ -186,11 +147,15 @@
   <!-- Bottom dock -->
   <div class="dock">
     <div class="actions">
-      <div class="pill" id="attachPill">&#128247; <span id="attachLabel">Choisir une image</span></div>
+      <div class="pill" id="videoPill">&#127909; Créer des vidéos</div>
+      <div class="pill" id="attachPill">&#128444; <span id="attachLabel">Modifier une image</span></div>
     </div>
-    <div class="composer">
+    <div class="composer" id="composer">
       <button class="plus" id="plusBtn" aria-label="ajouter">+</button>
-      <input type="text" id="instruction" placeholder="Décris la modification…" autocomplete="off" />
+      <input type="text" id="instruction" placeholder="Posez une question" autocomplete="off" />
+      <span class="rapide" id="rapideChip">&#9889; Rapide</span>
+      <button class="mic" id="micBtn" aria-label="micro">&#127908;</button>
+      <button class="parler" id="parlerBtn">&#128266; Parler</button>
       <button class="send" id="sendBtn" aria-label="envoyer">&#8593;</button>
     </div>
     <div class="err" id="err"></div>
@@ -201,7 +166,7 @@
   <input type="file" id="fileGallery" accept="image/*" />
   <input type="file" id="fileDoc" accept="image/png,image/jpeg,image/webp" />
 
-  <!-- Attach menu (popup) -->
+  <!-- Attach menu -->
   <div class="attach-menu" id="attachMenu">
     <div class="am-item" data-target="fileCamera"><span class="ai">&#128247;</span> Prendre une photo</div>
     <div class="am-item" data-target="fileGallery"><span class="ai">&#128444;</span> Choisir une photo</div>
@@ -213,14 +178,16 @@
   <aside class="drawer" id="drawer">
     <div class="profile">
       <div class="avatar">&#128100;</div>
-      <b>Mon éditeur IA</b>
+      <b>Bryan Lami</b>
+      <button class="icon-btn">&#187;</button>
     </div>
     <div class="promo">
       <div class="t"><b>100% local</b><span>Gratuit · illimité · privé</span></div>
       <button>Actif</button>
     </div>
-    <div class="menu-row"><span class="mi">&#9201;</span> Réglages avancés</div>
-    <div class="section-title">Historique</div>
+    <div class="menu-row" data-soon><span class="mi">&#9201;</span> Tâches</div>
+    <div class="menu-row" data-soon><span class="mi">&#128101;</span> Compagnons</div>
+    <div class="section-title">Conversations</div>
     <div class="hist" id="hist"><div class="empty">Aucune modification.</div></div>
     <div class="drawer-foot">
       <input class="search" id="search" placeholder="Rechercher" />
@@ -228,33 +195,37 @@
     </div>
   </aside>
 
+  <div class="toast" id="toast"></div>
+
   <script>
     const $ = (id) => document.getElementById(id);
     let currentFile = null;
 
     const attachPill = $('attachPill'), attachLabel = $('attachLabel');
-    const instruction = $('instruction'), sendBtn = $('sendBtn');
+    const instruction = $('instruction'), sendBtn = $('sendBtn'), composer = $('composer');
     const stage = $('stage'), stageImg = $('stageImg'), stageCap = $('stageCap');
     const logo = $('logo'), err = $('err');
     const drawer = $('drawer'), scrim = $('scrim');
     const attachMenu = $('attachMenu');
     const fileInputs = ['fileCamera', 'fileGallery', 'fileDoc'].map($);
 
-    /* ---- Attach menu ---- */
-    function openMenu() { attachMenu.classList.add('open'); }
+    /* Toast for not-available features */
+    let toastT;
+    function toast(msg) {
+      const t = $('toast'); t.textContent = msg; t.classList.add('show');
+      clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 1800);
+    }
+
+    /* Attach menu */
     function closeMenu() { attachMenu.classList.remove('open'); }
     function toggleMenu() { attachMenu.classList.toggle('open'); }
-
     attachPill.addEventListener('click', toggleMenu);
     $('plusBtn').addEventListener('click', toggleMenu);
-
-    // Close the menu when tapping outside it.
     document.addEventListener('click', (e) => {
       if (!attachMenu.classList.contains('open')) return;
       if (attachMenu.contains(e.target) || e.target === $('plusBtn') || attachPill.contains(e.target)) return;
       closeMenu();
     });
-
     attachMenu.querySelectorAll('.am-item').forEach((item) => {
       item.addEventListener('click', () => { closeMenu(); $(item.dataset.target).click(); });
     });
@@ -264,8 +235,8 @@
       if (!currentFile) return;
       attachPill.classList.add('attached');
       attachLabel.textContent = currentFile.name || 'photo';
-      logo.style.display = 'none';
-      stage.classList.add('show');
+      instruction.placeholder = 'Décris la modification…';
+      logo.style.display = 'none'; stage.classList.add('show');
       stageImg.src = URL.createObjectURL(currentFile);
       stageCap.textContent = 'Décris la modification puis envoie.';
       refreshSend();
@@ -273,43 +244,50 @@
     fileInputs.forEach((inp) => inp.addEventListener('change', () => onPicked(inp.files[0])));
 
     function refreshSend() {
-      sendBtn.classList.toggle('ready', !!currentFile && instruction.value.trim().length > 0);
+      const ready = !!currentFile && instruction.value.trim().length > 0;
+      sendBtn.classList.toggle('ready', ready);
+      composer.classList.toggle('editing', !!currentFile);
     }
     instruction.addEventListener('input', refreshSend);
 
     async function submit() {
       err.textContent = '';
-      if (!currentFile) { err.textContent = 'Choisis une image.'; return; }
+      if (!currentFile) { toast('Ajoute d\'abord une image (+)'); return; }
       if (!instruction.value.trim()) { err.textContent = 'Écris la modification.'; return; }
-
-      logo.style.display = 'none';
-      stage.classList.add('show');
+      logo.style.display = 'none'; stage.classList.add('show');
       stageCap.innerHTML = '<span class="spinner"></span>Traitement en cours…';
-
       const data = new FormData();
       data.append('image', currentFile);
       data.append('instruction', instruction.value.trim());
       try {
         const res = await fetch('/edit', { method: 'POST', body: data });
         if (!res.ok) { const j = await res.json().catch(() => ({})); throw new Error(j.error || 'Erreur serveur.'); }
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
+        const blob = await res.blob(); const url = URL.createObjectURL(blob);
         stageImg.src = url;
         stageCap.innerHTML = '<a class="dl" href="' + url + '" download="edited.png">&#11015; Télécharger</a>';
         loadHistory();
-      } catch (ex) {
-        stageCap.textContent = '';
-        err.textContent = ex.message;
-      }
+      } catch (ex) { stageCap.textContent = ''; err.textContent = ex.message; }
     }
     sendBtn.addEventListener('click', submit);
-    instruction.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+    instruction.addEventListener('keydown', (e) => { if (e.key === 'Enter' && currentFile) submit(); });
+
+    /* Decorative / not-available-in-local controls */
+    $('videoPill').addEventListener('click', () => toast('Création vidéo : indisponible en local'));
+    $('micBtn').addEventListener('click', () => toast('Mode vocal indisponible en local'));
+    $('parlerBtn').addEventListener('click', () => toast('Mode vocal indisponible en local'));
+    $('rapideChip').addEventListener('click', () => toast('Mode rapide déjà actif'));
+    document.querySelectorAll('.toggle span').forEach((tab) => tab.addEventListener('click', () => {
+      if (tab.dataset.tab === 'imagine') { toast('« Imagine » (génération) indisponible — édition seulement'); return; }
+      document.querySelectorAll('.toggle span').forEach((s) => s.classList.remove('active'));
+      tab.classList.add('active');
+    }));
+    document.querySelectorAll('[data-soon]').forEach((el) => el.addEventListener('click', () => toast('Bientôt')));
 
     $('newBtn').addEventListener('click', () => {
       currentFile = null; fileInputs.forEach((i) => (i.value = ''));
-      attachPill.classList.remove('attached'); attachLabel.textContent = 'Choisir une image';
-      instruction.value = ''; stage.classList.remove('show'); logo.style.display = '';
-      err.textContent = ''; refreshSend();
+      attachPill.classList.remove('attached'); attachLabel.textContent = 'Modifier une image';
+      instruction.value = ''; instruction.placeholder = 'Posez une question';
+      stage.classList.remove('show'); logo.style.display = ''; err.textContent = ''; refreshSend();
     });
 
     /* Drawer */
@@ -319,12 +297,10 @@
 
     let allEntries = [];
     function renderHistory(list) {
-      const box = $('hist');
-      box.innerHTML = '';
+      const box = $('hist'); box.innerHTML = '';
       if (!list.length) { box.innerHTML = '<div class="empty">Aucune modification.</div>'; return; }
       for (const e of list) {
-        const row = document.createElement('div');
-        row.className = 'hrow';
+        const row = document.createElement('div'); row.className = 'hrow';
         row.innerHTML = '<img src="/history/' + e.id + '" loading="lazy"><span></span>';
         row.querySelector('span').textContent = e.instruction;
         row.addEventListener('click', () => {
@@ -337,12 +313,11 @@
       }
     }
     async function loadHistory() {
-      try { const r = await fetch('/history'); allEntries = (await r.json()).entries || []; renderHistory(allEntries); }
-      catch (_) {}
+      try { const r = await fetch('/history'); allEntries = (await r.json()).entries || []; renderHistory(allEntries); } catch (_) {}
     }
     $('search').addEventListener('input', (e) => {
       const q = e.target.value.toLowerCase();
-      renderHistory(allEntries.filter(x => x.instruction.toLowerCase().includes(q)));
+      renderHistory(allEntries.filter((x) => x.instruction.toLowerCase().includes(q)));
     });
     $('clearBtn').addEventListener('click', async () => {
       if (!confirm("Vider tout l'historique ?")) return;

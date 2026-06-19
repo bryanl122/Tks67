@@ -102,6 +102,24 @@
     .err { color: #ff6b6b; font-size: 13px; text-align: center; min-height: 1em; margin-top: 6px; }
     input[type=file] { display: none; }
 
+    /* ---------- Attach menu (popup like Grok) ---------- */
+    .attach-menu {
+      position: fixed; left: 12px; right: 12px; bottom: calc(78px + env(safe-area-inset-bottom));
+      background: #1e1e1ee6; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border); border-radius: 22px; padding: 6px;
+      transform: translateY(12px) scale(.98); opacity: 0; pointer-events: none;
+      transition: opacity .18s, transform .18s; transform-origin: bottom left; z-index: 12;
+      max-width: 460px;
+    }
+    .attach-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+    .am-item {
+      display: flex; align-items: center; gap: 18px; padding: 16px 18px;
+      font-size: 18px; color: var(--text); cursor: pointer; border-radius: 16px;
+    }
+    .am-item:active { background: #ffffff14; }
+    .am-item + .am-item { border-top: 1px solid #ffffff10; }
+    .am-item .ai { width: 26px; text-align: center; font-size: 20px; color: #c7c7cc; }
+
     /* ---------- Drawer ---------- */
     .scrim {
       position: fixed; inset: 0; background: rgba(0,0,0,.5); opacity: 0;
@@ -178,7 +196,17 @@
     <div class="err" id="err"></div>
   </div>
 
-  <input type="file" id="file" accept="image/png,image/jpeg,image/webp" />
+  <!-- Attachment inputs -->
+  <input type="file" id="fileCamera" accept="image/*" capture="environment" />
+  <input type="file" id="fileGallery" accept="image/*" />
+  <input type="file" id="fileDoc" accept="image/png,image/jpeg,image/webp" />
+
+  <!-- Attach menu (popup) -->
+  <div class="attach-menu" id="attachMenu">
+    <div class="am-item" data-target="fileCamera"><span class="ai">&#128247;</span> Prendre une photo</div>
+    <div class="am-item" data-target="fileGallery"><span class="ai">&#128444;</span> Choisir une photo</div>
+    <div class="am-item" data-target="fileDoc"><span class="ai">&#128462;</span> Choisir un fichier</div>
+  </div>
 
   <!-- Drawer -->
   <div class="scrim" id="scrim"></div>
@@ -204,33 +232,50 @@
     const $ = (id) => document.getElementById(id);
     let currentFile = null;
 
-    const fileInput = $('file');
     const attachPill = $('attachPill'), attachLabel = $('attachLabel');
     const instruction = $('instruction'), sendBtn = $('sendBtn');
     const stage = $('stage'), stageImg = $('stageImg'), stageCap = $('stageCap');
     const logo = $('logo'), err = $('err');
     const drawer = $('drawer'), scrim = $('scrim');
+    const attachMenu = $('attachMenu');
+    const fileInputs = ['fileCamera', 'fileGallery', 'fileDoc'].map($);
 
-    function openFile() { fileInput.click(); }
-    attachPill.addEventListener('click', openFile);
-    $('plusBtn').addEventListener('click', openFile);
+    /* ---- Attach menu ---- */
+    function openMenu() { attachMenu.classList.add('open'); }
+    function closeMenu() { attachMenu.classList.remove('open'); }
+    function toggleMenu() { attachMenu.classList.toggle('open'); }
 
-    function refreshSend() {
-      sendBtn.classList.toggle('ready', !!currentFile && instruction.value.trim().length > 0);
-    }
-    instruction.addEventListener('input', refreshSend);
+    attachPill.addEventListener('click', toggleMenu);
+    $('plusBtn').addEventListener('click', toggleMenu);
 
-    fileInput.addEventListener('change', () => {
-      currentFile = fileInput.files[0] || null;
+    // Close the menu when tapping outside it.
+    document.addEventListener('click', (e) => {
+      if (!attachMenu.classList.contains('open')) return;
+      if (attachMenu.contains(e.target) || e.target === $('plusBtn') || attachPill.contains(e.target)) return;
+      closeMenu();
+    });
+
+    attachMenu.querySelectorAll('.am-item').forEach((item) => {
+      item.addEventListener('click', () => { closeMenu(); $(item.dataset.target).click(); });
+    });
+
+    function onPicked(file) {
+      currentFile = file || null;
       if (!currentFile) return;
       attachPill.classList.add('attached');
-      attachLabel.textContent = currentFile.name;
+      attachLabel.textContent = currentFile.name || 'photo';
       logo.style.display = 'none';
       stage.classList.add('show');
       stageImg.src = URL.createObjectURL(currentFile);
       stageCap.textContent = 'Décris la modification puis envoie.';
       refreshSend();
-    });
+    }
+    fileInputs.forEach((inp) => inp.addEventListener('change', () => onPicked(inp.files[0])));
+
+    function refreshSend() {
+      sendBtn.classList.toggle('ready', !!currentFile && instruction.value.trim().length > 0);
+    }
+    instruction.addEventListener('input', refreshSend);
 
     async function submit() {
       err.textContent = '';
@@ -261,7 +306,7 @@
     instruction.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
 
     $('newBtn').addEventListener('click', () => {
-      currentFile = null; fileInput.value = '';
+      currentFile = null; fileInputs.forEach((i) => (i.value = ''));
       attachPill.classList.remove('attached'); attachLabel.textContent = 'Choisir une image';
       instruction.value = ''; stage.classList.remove('show'); logo.style.display = '';
       err.textContent = ''; refreshSend();

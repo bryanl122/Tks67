@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+/* =====================================================================
+   ÉclaDeCire — Design System (production)
+   Tokens extraits du logo officiel.
+   ===================================================================== */
+@theme {
+  --color-cire: #fbf8f4;
+  --color-cire-rose: #f3eae0;
+  --color-cire-deep: #ece0d2;
+  --color-cacao: #3e2f23;
+  --color-cacao-soft: #5a4636;
+  --color-eclat: #be9a66;
+  --color-eclat-light: #d9c4a0;
+  --color-eclat-dark: #9e7e4f;
+  --color-sauge: #8e9576;
+  --color-sauge-light: #aeb496;
+  --color-muted: #7a6b5c;
+  --color-line: #e6dac9;
+  --color-success: #6e7a55;
+  --color-danger: #9a5641;
+
+  --font-serif: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-pinyon), cursive;
+
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 16px;
+
+  --shadow-soft: 0 1px 2px rgba(62, 47, 35, 0.06);
+  --shadow-card: 0 10px 30px rgba(62, 47, 35, 0.08);
+  --shadow-float: 0 24px 70px rgba(62, 47, 35, 0.14);
+
+  --ease-lux: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--color-cire);
+  color: var(--color-cacao);
+  font-family: var(--font-sans);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+::selection {
+  background: var(--color-eclat-light);
+  color: var(--color-cacao);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--color-cacao);
+}
+
+/* ---------- Composants utilitaires ---------- */
+@layer components {
+  .container-lux {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: 24px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    color: var(--color-eclat-dark);
+  }
+
+  .script {
+    font-family: var(--font-script);
+    color: var(--color-eclat);
+    line-height: 1;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    padding: 16px 32px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.35s var(--ease-lux);
+  }
+  .btn-primary {
+    background: var(--color-cacao);
+    color: var(--color-cire);
+  }
+  .btn-primary:hover {
+    background: var(--color-eclat);
+    color: var(--color-cacao);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-cacao);
+    border-color: var(--color-cacao);
+  }
+  .btn-ghost:hover {
+    background: var(--color-cacao);
+    color: var(--color-cire);
+  }
+  .btn-light {
+    background: var(--color-cire);
+    color: var(--color-cacao);
+  }
+  .btn-light:hover {
+    background: var(--color-eclat);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--color-cacao);
+    color: var(--color-cire);
+  }
+  .badge-gold {
+    background: var(--color-eclat);
+    color: var(--color-cacao);
+  }
+  .badge-sauge {
+    background: var(--color-sauge);
+    color: var(--color-cire);
+  }
+  .badge-soft {
+    background: var(--color-cire-deep);
+    color: var(--color-cacao-soft);
+  }
+
+  .field {
+    width: 100%;
+    background: var(--color-cire);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    padding: 15px 18px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-cacao);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-eclat);
+    box-shadow: 0 0 0 3px rgba(190, 154, 102, 0.18);
+  }
+
+  .divider-lux {
+    width: 54px;
+    height: 1px;
+    background: var(--color-eclat);
+    margin-inline: auto;
+    position: relative;
+  }
+  .divider-lux::before,
+  .divider-lux::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-eclat);
+    transform: translateY(-50%);
+  }
+  .divider-lux::before { left: -10px; }
+  .divider-lux::after { right: -10px; }
+}
+
+/* ---------- Détails ---------- */
+.stars {
+  color: var(--color-eclat);
+  letter-spacing: 2px;
+}
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

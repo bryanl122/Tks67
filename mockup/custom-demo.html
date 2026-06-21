@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Configurateur — démo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Jost:wght@400;500&display=swap');
+:root{--cire:#FBF8F4;--cire-rose:#F3EAE0;--cire-deep:#ECE0D2;--cacao:#3E2F23;--muted:#7A6B5C;--eclat:#BE9A66;--eclat-dark:#9E7E4F;--sauge:#8E9576;--line:#E6DAC9}
+*{box-sizing:border-box;margin:0}
+body{background:var(--cire);font-family:'Jost',sans-serif;color:var(--cacao);padding:40px}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-family:'Fraunces',serif;font-weight:500;font-size:34px;text-align:center}
+.eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--eclat-dark);text-align:center;display:block;margin-bottom:8px}
+.sub{text-align:center;color:var(--muted);margin:6px 0 34px}
+.config{display:grid;grid-template-columns:1fr 1fr;gap:32px;background:var(--cire-rose);border:1px solid var(--line);border-radius:16px;padding:28px;align-items:center}
+.preview{aspect-ratio:1;background:radial-gradient(120% 100% at 50% 18%,var(--cire),var(--cire-rose));border-radius:12px;display:grid;place-items:center;position:relative;box-shadow:0 10px 30px rgba(62,47,35,.08)}
+.preview .tag{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:var(--eclat);color:var(--cacao);font-size:10.5px;text-transform:uppercase;letter-spacing:.14em;padding:6px 12px;border-radius:999px}
+.lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font-size:12.5px;padding:6px 12px;border:1px solid var(--line);background:var(--cire);border-radius:999px;color:var(--muted)}
+.chip.on{background:var(--cacao);color:var(--cire);border-color:var(--cacao)}
+.swatches{display:flex;flex-wrap:wrap;gap:10px}
+.sw{width:34px;height:34px;border-radius:50%;border:2px solid transparent;box-shadow:inset 0 0 0 2px var(--cire),0 1px 2px rgba(62,47,35,.1);display:grid;place-items:center}
+.sw.on{border-color:var(--cacao)}
+.sw .ck{color:var(--cacao);font-size:15px;line-height:1}
+.name{font-family:'Fraunces',serif;font-size:18px}
+.row{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:42px}
+.tile{background:var(--cire-rose);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.tile small{font-size:11px;color:var(--muted);letter-spacing:.05em}
+.row4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:24px}
+.section-t{font-family:'Fraunces',serif;font-size:20px;margin:46px 0 6px;text-align:center}
+@keyframes fl{0%,100%{transform:scaleY(1) scaleX(1)}50%{transform:scaleY(1.05) scaleX(.96)}}
+.flame{transform-origin:160px 176px;animation:fl 1.5s ease-in-out infinite}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="eyebrow">Fiche produit · nouveauté</span>
+  <h1>Composez votre bougie</h1>
+  <p class="sub">Choisissez le parfum et la couleur de cire — l'aperçu se recolore en temps réel.</p>
+
+  <div class="config">
+    <div class="preview" id="bigPreview">
+      <span class="tag" id="bigTag">Aperçu personnalisé · Lavande</span>
+    </div>
+    <div>
+      <p class="lbl">Parfum</p>
+      <div class="chips">
+        <span class="chip">Rose &amp; Pivoine</span>
+        <span class="chip on">Lavande de Provence</span>
+        <span class="chip">Vanille Bourbon</span>
+        <span class="chip">Monoï de Tahiti</span>
+        <span class="chip">Fruits Rouges</span>
+        <span class="chip">Bois de Santal</span>
+      </div>
+      <p class="lbl">Couleur de cire — <b class="name" id="cName" style="color:var(--cacao)">Lavande</b></p>
+      <div class="swatches" id="bigSwatches"></div>
+    </div>
+  </div>
+
+  <div class="section-t">La même bougie, recolorée à l'infini</div>
+  <div class="row" id="colorRow"></div>
+
+  <div class="section-t">Toutes les formes suivent la couleur choisie</div>
+  <div class="row4" id="shapeRow"></div>
+</div>
+
+<script>
+const COLORS=[
+ ['Ivoire','#F1E6D2'],['Rose poudré','#E7AFBC'],['Rose framboise','#D86A86'],['Corail','#E79B78'],
+ ['Lavande','#B3A4D8'],['Bleu brume','#A7C3D6'],['Vert sauge','#9CAC88'],['Terracotta','#C2785A'],
+ ['Or miel','#D6B068'],['Cacao','#7A5A44'],['Pêche','#F0C3A2'],['Blanc pur','#F6F2EA']
+];
+function clamp(n){return Math.max(0,Math.min(255,Math.round(n)))}
+function shade(hex,a){const h=hex.replace('#','');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);const f=a<0?0:255,t=Math.abs(a);const m=c=>clamp(c+(f-c)*t);return`rgb(${m(r)},${m(g)},${m(b)})`}
+function flameG(id){return`<defs><radialGradient id="f${id}" cx="50%" cy="35%" r="65%"><stop offset="0%" stop-color="#FFF7E0"/><stop offset="45%" stop-color="#FFD27A"/><stop offset="100%" stop-color="#E8973C"/></radialGradient></defs>`}
+function flame(id,topY,wb){return`<g class="flame"><path d="M160 ${topY-34} C176 ${topY-14},174 ${topY+6},160 ${topY+10} C146 ${topY+6},144 ${topY-14},160 ${topY-34}Z" fill="url(#f${id})"/><line x1="160" y1="${topY+8}" x2="160" y2="${wb}" stroke="#5A4636" stroke-width="2.4" stroke-linecap="round"/></g>`}
+function candle(hex,shape){const id=Math.random().toString(36).slice(2,7);const light=shade(hex,.22),dark=shade(hex,-.2);
+ const grad=`<linearGradient id="w${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${light}"/><stop offset="55%" stop-color="${hex}"/><stop offset="100%" stop-color="${dark}"/></linearGradient>`;
+ let body='';
+ if(shape==='jar'){body=`<rect x="86" y="176" width="148" height="140" rx="18" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.55)" stroke-width="2"/><rect x="94" y="190" width="132" height="120" rx="12" fill="url(#w${id})"/><ellipse cx="160" cy="194" rx="64" ry="10" fill="${light}" opacity=".85"/><rect x="98" y="200" width="10" height="96" rx="5" fill="rgba(255,255,255,.35)"/>`}
+ else if(shape==='heart'){const h="M160 300 C96 252,70 214,70 184 C70 156,92 138,116 138 C138 138,152 152,160 168 C168 152,182 138,204 138 C228 138,250 156,250 184 C250 214,224 252,160 300Z";body=`<path d="${h}" fill="url(#w${id})"/><path d="${h}" fill="none" stroke="${light}" stroke-opacity=".5" stroke-width="2"/><ellipse cx="135" cy="172" rx="22" ry="14" fill="#fff" opacity=".18"/>`}
+ else if(shape==='cube'){let d='';for(let r=0;r<5;r++)for(let c=0;c<5;c++){d+=`<circle cx="${108+c*26}" cy="${184+r*26}" r="13" fill="${(r+c)%2?light:hex}" opacity=".95"/>`}body=`<rect x="92" y="168" width="136" height="136" rx="14" fill="url(#w${id})"/><g clip-path="inset(0 round 14px)">${d}</g><rect x="92" y="168" width="136" height="136" rx="14" fill="none" stroke="${light}" stroke-opacity=".4" stroke-width="2"/>`}
+ else{body=`<ellipse cx="160" cy="170" rx="58" ry="12" fill="${light}"/><rect x="102" y="170" width="116" height="146" fill="url(#w${id})"/><ellipse cx="160" cy="316" rx="58" ry="12" fill="${light}" opacity=".5"/><rect x="108" y="178" width="9" height="130" rx="4" fill="rgba(255,255,255,.28)"/>`}
+ const topY=shape==='pillar'?120:150;const wb=shape==='heart'?178:(shape==='pillar'?150:176);
+ return`<svg viewBox="0 0 320 360" style="width:100%;height:100%">${flameG(id)}<defs>${grad}</defs>${flame(id,topY,wb)}${body}</svg>`}
+
+// grand aperçu = lavande, jar
+function setBig(name,hex){document.getElementById('bigPreview').insertAdjacentHTML('afterbegin',candle(hex,'jar'));document.getElementById('bigTag').textContent='Aperçu personnalisé · '+name;document.getElementById('cName').textContent=name}
+setBig('Lavande','#B3A4D8');
+// swatches
+const sw=document.getElementById('bigSwatches');COLORS.forEach(([n,h])=>{const on=n==='Lavande';sw.insertAdjacentHTML('beforeend',`<div class="sw ${on?'on':''}" style="background:${h}">${on?'<span class="ck">✓</span>':''}</div>`)});
+// row colors (jar)
+const cr=document.getElementById('colorRow');[['Rose framboise','#D86A86'],['Corail','#E79B78'],['Lavande','#B3A4D8'],['Vert sauge','#9CAC88'],['Or miel','#D6B068'],['Bleu brume','#A7C3D6']].forEach(([n,h])=>{cr.insertAdjacentHTML('beforeend',`<div class="tile"><div style="aspect-ratio:1">${candle(h,'jar')}</div><small>${n}</small></div>`)});
+// shapes
+const srn=[['Pot','jar','#E7AFBC'],['Cœur','heart','#D86A86'],['Cube bulles','cube','#F4EFE6'],['Moulée','pillar','#E79B78']];
+const sr=document.getElementById('shapeRow');srn.forEach(([n,s,h])=>{sr.insertAdjacentHTML('beforeend',`<div class="tile"><div style="aspect-ratio:1">${candle(h,s)}</div><small>${n}</small></div>`)});
+</script>
+</body>
+</html>

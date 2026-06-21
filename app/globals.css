@@ -210,3 +210,35 @@ details > summary::-webkit-details-marker {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ---------- Aperçu bougie : flamme vivante ---------- */
+@keyframes candle-flicker {
+  0%, 100% { transform: scaleY(1) scaleX(1) translateY(0); opacity: 1; }
+  25% { transform: scaleY(0.94) scaleX(1.03) translateY(1px); opacity: 0.92; }
+  50% { transform: scaleY(1.04) scaleX(0.97) translateY(-1px); opacity: 1; }
+  75% { transform: scaleY(0.97) scaleX(1.02) translateY(0.5px); opacity: 0.95; }
+}
+@keyframes candle-halo {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.8; }
+}
+.candle-flame { animation: candle-flicker 1.5s ease-in-out infinite; }
+.candle-glow { animation: candle-halo 1.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .candle-flame, .candle-glow { animation: none; }
+}
+
+/* pastille couleur sélectionnée */
+.swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  box-shadow: inset 0 0 0 2px var(--color-cire), var(--shadow-soft);
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-lux);
+}
+.swatch:hover { transform: scale(1.1); }
+.swatch[data-active="true"] {
+  border-color: var(--color-cacao);
+}

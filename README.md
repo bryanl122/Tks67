@@ -9,6 +9,25 @@ depuis ton téléphone via le réseau Wi-Fi.
 Le modèle utilisé est [InstructPix2Pix](https://huggingface.co/timbrooks/instruct-pix2pix),
 exécuté via [diffusers](https://github.com/huggingface/diffusers).
 
+## Version « fichier unique » (la plus simple)
+
+Si tu veux tout dans **un seul fichier** à poser où tu veux (ex. sur ton bureau) :
+utilise `editeur_photo_ia.py`. Il contient le serveur, l'interface, l'IA et
+l'historique. Le safety checker y est désactivé par défaut (`SAFETY_CHECKER = False`
+en haut du fichier).
+
+```bash
+pip install flask pillow torch diffusers transformers accelerate safetensors
+python editeur_photo_ia.py
+```
+
+Puis ouvre l'adresse affichée depuis ton téléphone (même Wi-Fi). Un dossier
+`history/` est créé à côté du fichier pour garder tes éditions.
+
+> Le reste du README décrit la version « projet » (plusieurs fichiers), identique
+> côté fonctionnement.
+
+
 ## Installation
 
 Il te faut **Python 3.10+**.

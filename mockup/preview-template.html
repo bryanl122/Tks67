@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ÉclaDeCire — Aperçu</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Jost:wght@300;400;500;600&family=Pinyon+Script&display=swap');
+:root{--cire:#FBF8F4;--cire-rose:#F3EAE0;--cire-deep:#ECE0D2;--cacao:#3E2F23;--cacao-soft:#5A4636;--eclat:#BE9A66;--eclat-light:#D9C4A0;--eclat-dark:#9E7E4F;--sauge:#8E9576;--muted:#7A6B5C;--line:#E6DAC9;--serif:'Fraunces',Georgia,serif;--sans:'Jost',sans-serif;--script:'Pinyon Script',cursive}
+*{box-sizing:border-box;margin:0}
+body{font-family:var(--sans);background:var(--cire);color:var(--cacao);line-height:1.7;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.12;color:var(--cacao)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+.eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--eclat-dark);font-weight:500}
+.script{font-family:var(--script);color:var(--eclat)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:500;font-size:12.5px;text-transform:uppercase;letter-spacing:.16em;padding:15px 30px;border:1px solid transparent;border-radius:4px;cursor:pointer;transition:.3s;text-decoration:none}
+.btn-primary{background:var(--cacao);color:var(--cire)}.btn-primary:hover{background:var(--eclat);color:var(--cacao)}
+.btn-ghost{background:transparent;color:var(--cacao);border-color:var(--cacao)}.btn-ghost:hover{background:var(--cacao);color:var(--cire)}
+.badge{display:inline-block;font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;padding:6px 12px;border-radius:999px;background:var(--eclat);color:var(--cacao)}
+.divider{width:54px;height:1px;background:var(--eclat);margin:16px auto;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:4px;height:4px;border-radius:50%;background:var(--eclat);transform:translateY(-50%)}.divider::before{left:-10px}.divider::after{right:-10px}
+.center{text-align:center}
+section{padding:72px 0}
+/* topbar/header */
+.topbar{background:var(--cacao);color:var(--cire);text-align:center;font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:8px}
+.topbar span{color:var(--eclat-light)}
+.nav{position:sticky;top:0;z-index:30;background:rgba(251,248,244,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .row{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:10px}.logo img{width:42px;height:42px;border-radius:50%}.logo b{font-family:var(--serif);font-weight:600;font-size:20px}
+.menu{display:flex;gap:26px}.menu a{font-size:13px;color:var(--cacao-soft);text-decoration:none}
+@media(max-width:760px){.menu{display:none}}
+/* hero */
+.hero{background:radial-gradient(120% 90% at 78% 20%,rgba(217,196,160,.45),transparent 55%),linear-gradient(160deg,var(--cire-rose),var(--cire) 60%)}
+.hero .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:60px 0}
+.hero h1{font-size:clamp(38px,6vw,62px)}
+.hero .lead{color:var(--muted);font-size:18px;max-width:48ch;margin:18px 0 28px}
+.hero .media{aspect-ratio:4/5;border-radius:180px 180px 14px 14px;overflow:hidden;box-shadow:0 24px 70px rgba(62,47,35,.18);max-width:420px;margin:0 auto}
+.hero .media img{width:100%;height:100%;object-fit:cover}
+.stats{display:flex;gap:34px;margin-top:36px;padding-top:22px;border-top:1px solid var(--line)}
+.stats b{font-family:var(--serif);font-size:28px;display:block}.stats small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+@media(max-width:860px){.hero .grid{grid-template-columns:1fr}}
+/* assur */
+.assur{background:var(--cacao);color:var(--cire)}
+.assur .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center;padding:24px 0}
+.assur b{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}.assur small{display:block;font-size:11px;color:rgba(251,248,244,.6)}
+@media(max-width:760px){.assur .grid{grid-template-columns:repeat(2,1fr);gap:18px}}
+/* products */
+.head{max-width:60ch;margin:0 auto 44px;text-align:center}.head p{color:var(--muted);margin-top:10px}
+.products{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.card .ph{aspect-ratio:4/5;border-radius:8px;overflow:hidden;position:relative;background:var(--cire-deep)}
+.card .ph img{width:100%;height:100%;object-fit:cover;transition:.6s}.card:hover .ph img{transform:scale(1.05)}
+.card .bd{text-align:center;padding-top:14px}
+.card .fam{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sauge);font-weight:500}
+.card h3{font-size:19px;margin:6px 0 4px}.card .notes{font-size:13px;color:var(--muted);min-height:36px}
+.card .pr{font-family:var(--serif);font-size:18px;margin-top:6px}.stars{color:var(--eclat);font-size:13px}
+@media(max-width:980px){.products{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.products{grid-template-columns:1fr}}
+/* CONFIGURATOR */
+.config-sec{background:var(--cire-rose)}
+.config{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center}
+.preview{aspect-ratio:1;background:radial-gradient(120% 100% at 50% 18%,var(--cire),var(--cire-rose));border-radius:16px;display:grid;place-items:center;position:relative;box-shadow:0 10px 30px rgba(62,47,35,.1)}
+.preview .tag{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:var(--eclat);color:var(--cacao);font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;padding:6px 14px;border-radius:999px}
+.lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 9px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.chip{font-size:12.5px;padding:7px 13px;border:1px solid var(--line);background:var(--cire);border-radius:999px;color:var(--muted);cursor:pointer;transition:.2s}
+.chip.on{background:var(--cacao);color:var(--cire);border-color:var(--cacao)}
+.swatches{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px}
+.sw{width:36px;height:36px;border-radius:50%;border:2px solid transparent;box-shadow:inset 0 0 0 2px var(--cire),0 1px 2px rgba(62,47,35,.12);display:grid;place-items:center;cursor:pointer;transition:transform .2s}
+.sw:hover{transform:scale(1.1)}.sw.on{border-color:var(--cacao)}.sw .ck{color:var(--cacao);font-size:16px}
+.shape-tabs{display:flex;gap:8px;margin:18px 0 4px}
+.stab{font-size:12px;padding:8px 14px;border:1px solid var(--line);border-radius:6px;background:var(--cire);cursor:pointer}
+.stab.on{border-color:var(--cacao);background:var(--cire-deep)}
+.fee{font-size:12px;color:var(--muted);margin-top:14px}
+@keyframes fl{0%,100%{transform:scaleY(1) scaleX(1)}50%{transform:scaleY(1.05) scaleX(.96)}}
+.flame{transform-origin:160px 176px;animation:fl 1.5s ease-in-out infinite}
+@media(max-width:760px){.config{grid-template-columns:1fr}}
+/* reviews */
+.reviews{background:var(--cacao);color:var(--cire)}.reviews h2{color:var(--cire)}.reviews .eyebrow{color:var(--eclat-light)}
+.revs{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}
+.rev{background:var(--cacao-soft);border:1px solid rgba(190,154,102,.25);border-radius:16px;padding:28px}
+.rev p{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--cire)}.rev .who{font-size:12px;color:rgba(251,248,244,.6);margin-top:14px}
+@media(max-width:760px){.revs{grid-template-columns:1fr}}
+/* newsletter */
+.news{background:radial-gradient(100% 120% at 50% 0,rgba(217,196,160,.5),transparent 60%),var(--cire-rose);text-align:center}
+.news form{display:flex;gap:10px;max-width:460px;margin:22px auto 0}
+.news input{flex:1;border:1px solid var(--line);background:var(--cire);border-radius:4px;padding:14px;font-family:var(--sans)}
+@media(max-width:520px){.news form{flex-direction:column}}
+/* footer */
+.footer{background:var(--cacao);color:rgba(251,248,244,.7);padding:64px 0 24px}
+.footer b{font-family:var(--serif);color:var(--cire);font-size:22px}
+.footer .script{font-size:26px;color:var(--eclat-light);display:block;margin-top:10px}
+.footer .bottom{border-top:1px solid rgba(190,154,102,.2);margin-top:30px;padding-top:20px;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.banner{background:var(--eclat);color:var(--cacao);text-align:center;font-size:12px;padding:8px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="banner">APERÇU AUTONOME · ÉclaDeCire — le configurateur de couleur ci-dessous est interactif 👇</div>
+
+<div class="topbar">Livraison offerte dès 60€ · Coulées à la main en France · <span>-10% sur votre 1ère commande</span></div>
+<nav class="nav"><div class="wrap row">
+  <div class="logo"><img src="%%LOGO%%" alt="ÉclaDeCire"><b>ecladecire</b></div>
+  <div class="menu"><a href="#best">Boutique</a><a href="#config">Personnaliser</a><a href="#avis">Avis</a><a href="#news">Newsletter</a></div>
+  <a href="#config" class="btn btn-primary" style="padding:11px 20px">Personnaliser</a>
+</div></nav>
+
+<!-- HERO -->
+<section class="hero"><div class="wrap grid">
+  <div>
+    <p class="script" style="font-size:34px">faites avec passion</p>
+    <h1>L'éclat d'une<br>flamme artisanale</h1>
+    <p class="lead">Des bougies coulées et sculptées à la main en cire végétale, parfumées une à une. Chaque éclat, une émotion.</p>
+    <a href="#config" class="btn btn-primary">Composer ma bougie</a>
+    <div class="stats">
+      <div><b>100%</b><small>Cire végétale</small></div>
+      <div><b>Fait</b><small>Main en France</small></div>
+      <div><b>4.9/5</b><small>+1 200 avis</small></div>
+    </div>
+  </div>
+  <div class="media"><img src="%%P_petale-de-rose%%" alt="Bougie Pétale de Rose"></div>
+</div></section>
+
+<!-- ASSUR -->
+<section class="assur" style="padding:0"><div class="wrap grid">
+  <div><b>Livraison offerte</b><small>Dès 60€</small></div>
+  <div><b>Fait main</b><small>Coulé en France</small></div>
+  <div><b>Paiement sécurisé</b><small>Stripe · PayPal · Pay</small></div>
+  <div><b>Retours 30 jours</b><small>Satisfait ou remboursé</small></div>
+</div></section>
+
+<!-- BEST SELLERS -->
+<section id="best"><div class="wrap">
+  <div class="head"><span class="eyebrow">Les préférées</span><h2 style="font-size:32px">Nos best-sellers</h2><div class="divider"></div></div>
+  <div class="products">
+    <div class="card"><div class="ph"><span class="badge" style="position:absolute;top:12px;left:12px">Best-seller</span><img src="%%P_petale-de-rose%%"></div><div class="bd"><div class="fam">Florale</div><h3>Pétale de Rose</h3><p class="notes">Rose · Pivoine · Musc</p><div class="stars">★★★★★</div><div class="pr">24€</div></div></div>
+    <div class="card"><div class="ph"><img src="%%P_bouquet-de-roses%%"></div><div class="bd"><div class="fam">Florale</div><h3>Bouquet de Roses</h3><p class="notes">Rose · Litchi · Violette</p><div class="stars">★★★★★</div><div class="pr">32€</div></div></div>
+    <div class="card"><div class="ph"><img src="%%P_jardin-de-sauge%%"></div><div class="bd"><div class="fam">Végétale</div><h3>Jardin de Sauge</h3><p class="notes">Sauge · Eucalyptus</p><div class="stars">★★★★★</div><div class="pr">22€</div></div></div>
+    <div class="card"><div class="ph"><img src="%%P_edition-love%%"></div><div class="bd"><div class="fam">Gourmande</div><h3>Édition LOVE</h3><p class="notes">Praline · Vanille · Tonka</p><div class="stars">★★★★★</div><div class="pr">26€</div></div></div>
+  </div>
+</div></section>
+
+<!-- CONFIGURATEUR -->
+<section id="config" class="config-sec"><div class="wrap">
+  <div class="head"><span class="eyebrow">Fiche produit · personnalisation</span><h2 style="font-size:32px">Composez votre bougie</h2><div class="divider"></div><p>Choisissez le parfum et la couleur — l'aperçu se recolore en temps réel.</p></div>
+  <div class="config">
+    <div class="preview" id="preview"><span class="tag" id="tag">Aperçu personnalisé · Lavande</span></div>
+    <div>
+      <p class="lbl">Forme</p>
+      <div class="shape-tabs" id="shapeTabs">
+        <div class="stab on" data-shape="jar">Pot</div>
+        <div class="stab" data-shape="heart">Cœur</div>
+        <div class="stab" data-shape="cube">Cube</div>
+        <div class="stab" data-shape="pillar">Moulée</div>
+      </div>
+      <p class="lbl" style="margin-top:18px">Parfum</p>
+      <div class="chips" id="chips"></div>
+      <p class="lbl">Couleur de cire — <b id="cname" style="color:var(--cacao);font-family:var(--serif)">Lavande</b></p>
+      <div class="swatches" id="swatches"></div>
+      <p class="fee" id="fee">✨ Modifiez la couleur : l'aperçu change instantanément.</p>
+      <a href="#" class="btn btn-primary" style="margin-top:16px" onclick="return false">Ajouter au panier — 26€</a>
+    </div>
+  </div>
+</div></section>
+
+<!-- AVIS -->
+<section id="avis" class="reviews"><div class="wrap">
+  <div class="head"><span class="eyebrow">Ils nous font confiance</span><h2 style="font-size:32px">4,9/5 · +1 200 avis</h2><div class="divider"></div></div>
+  <div class="revs">
+    <div class="rev"><div class="stars">★★★★★</div><p>« Une odeur incroyable, on sent l'artisanat. »</p><div class="who">Camille R. · Pétale de Rose</div></div>
+    <div class="rev"><div class="stars">★★★★★</div><p>« L'emballage est digne d'une grande maison. »</p><div class="who">Sophie L. · Bouquet de Roses</div></div>
+    <div class="rev"><div class="stars">★★★★★</div><p>« Cire végétale, parfum subtil. Je suis fidèle ! »</p><div class="who">Marie D. · Jardin de Sauge</div></div>
+  </div>
+</div></section>
+
+<!-- NEWSLETTER -->
+<section id="news" class="news"><div class="wrap">
+  <p class="script" style="font-size:34px">restons en lumière</p>
+  <h2 style="font-size:30px;margin-top:6px">-10% sur votre première commande</h2>
+  <form onsubmit="return false"><input type="email" placeholder="Votre adresse e-mail"><button class="btn btn-primary">Je m'inscris</button></form>
+</div></section>
+
+<!-- FOOTER -->
+<footer class="footer"><div class="wrap">
+  <b>ecladecire</b>
+  <span class="script">je brûle pour toi</span>
+  <div class="bottom"><span>© 2026 ÉclaDeCire · Mentions légales · CGV · Confidentialité</span><span>VISA · MASTERCARD · PAYPAL · APPLE PAY</span></div>
+</div></footer>
+
+<script>
+const COLORS=[['Naturelle','#E3A6B2'],['Ivoire','#F1E6D2'],['Rose poudré','#E7AFBC'],['Rose framboise','#D86A86'],['Corail','#E79B78'],['Pêche','#F0C3A2'],['Lavande','#B3A4D8'],['Bleu brume','#A7C3D6'],['Vert sauge','#9CAC88'],['Terracotta','#C2785A'],['Or miel','#D6B068'],['Cacao','#7A5A44'],['Blanc pur','#F6F2EA']];
+const SCENTS=['Rose & Pivoine','Lavande de Provence','Vanille Bourbon','Monoï de Tahiti','Fruits Rouges','Bois de Santal','Praline & Caramel','Eucalyptus & Menthe','Coton Frais','Barbe à Papa'];
+let cur={name:'Lavande',hex:'#B3A4D8'},shape='jar',scent='Lavande de Provence';
+function clamp(n){return Math.max(0,Math.min(255,Math.round(n)))}
+function shade(hex,a){const h=hex.replace('#','');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);const f=a<0?0:255,t=Math.abs(a);const m=c=>clamp(c+(f-c)*t);return`rgb(${m(r)},${m(g)},${m(b)})`}
+function candle(hex,shape){const id=Math.random().toString(36).slice(2,7);const light=shade(hex,.22),dark=shade(hex,-.2);
+ const grad=`<linearGradient id="w${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${light}"/><stop offset="55%" stop-color="${hex}"/><stop offset="100%" stop-color="${dark}"/></linearGradient>`;
+ const fg=`<radialGradient id="f${id}" cx="50%" cy="35%" r="65%"><stop offset="0%" stop-color="#FFF7E0"/><stop offset="45%" stop-color="#FFD27A"/><stop offset="100%" stop-color="#E8973C"/></radialGradient>`;
+ let body='';
+ if(shape==='jar')body=`<rect x="86" y="176" width="148" height="140" rx="18" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.55)" stroke-width="2"/><rect x="94" y="190" width="132" height="120" rx="12" fill="url(#w${id})"/><ellipse cx="160" cy="194" rx="64" ry="10" fill="${light}" opacity=".85"/><rect x="98" y="200" width="10" height="96" rx="5" fill="rgba(255,255,255,.35)"/>`;
+ else if(shape==='heart'){const h="M160 300 C96 252,70 214,70 184 C70 156,92 138,116 138 C138 138,152 152,160 168 C168 152,182 138,204 138 C228 138,250 156,250 184 C250 214,224 252,160 300Z";body=`<path d="${h}" fill="url(#w${id})"/><ellipse cx="135" cy="172" rx="22" ry="14" fill="#fff" opacity=".18"/>`}
+ else if(shape==='cube'){let d='';for(let r=0;r<5;r++)for(let c=0;c<5;c++)d+=`<circle cx="${108+c*26}" cy="${184+r*26}" r="13" fill="${(r+c)%2?light:hex}" opacity=".95"/>`;body=`<rect x="92" y="168" width="136" height="136" rx="14" fill="url(#w${id})"/><g>${d}</g>`}
+ else body=`<ellipse cx="160" cy="170" rx="58" ry="12" fill="${light}"/><rect x="102" y="170" width="116" height="146" fill="url(#w${id})"/><rect x="108" y="178" width="9" height="130" rx="4" fill="rgba(255,255,255,.28)"/>`;
+ const topY=shape==='pillar'?120:150,wb=shape==='heart'?178:(shape==='pillar'?150:176);
+ const flame=`<g class="flame"><path d="M160 ${topY-34} C176 ${topY-14},174 ${topY+6},160 ${topY+10} C146 ${topY+6},144 ${topY-14},160 ${topY-34}Z" fill="url(#f${id})"/><line x1="160" y1="${topY+8}" x2="160" y2="${wb}" stroke="#5A4636" stroke-width="2.4" stroke-linecap="round"/></g>`;
+ return`<svg viewBox="0 0 320 360" style="width:78%;height:78%"><defs>${grad}${fg}</defs>${flame}${body}</svg>`}
+function render(){const p=document.getElementById('preview');p.querySelectorAll('svg').forEach(s=>s.remove());p.insertAdjacentHTML('afterbegin',candle(cur.hex,shape));
+ document.getElementById('tag').textContent='Aperçu personnalisé · '+cur.name;document.getElementById('cname').textContent=cur.name;
+ const custom=cur.name!=='Naturelle'||scent!=='Lavande de Provence';
+ document.getElementById('fee').textContent=custom?'✨ Personnalisation +2€ — coulée rien que pour vous.':"✨ Modifiez la couleur : l'aperçu change instantanément.";}
+const chips=document.getElementById('chips');SCENTS.forEach(s=>{const e=document.createElement('span');e.className='chip'+(s===scent?' on':'');e.textContent=s;e.onclick=()=>{scent=s;[...chips.children].forEach(c=>c.classList.toggle('on',c.textContent===s));render()};chips.appendChild(e)});
+const sw=document.getElementById('swatches');COLORS.forEach(([n,h])=>{const e=document.createElement('div');e.className='sw'+(n===cur.name?' on':'');e.style.background=h;e.title=n;e.innerHTML=n===cur.name?'<span class="ck">✓</span>':'';e.onclick=()=>{cur={name:n,hex:h};[...sw.children].forEach((c,i)=>{c.classList.toggle('on',COLORS[i][0]===n);c.innerHTML=COLORS[i][0]===n?'<span class="ck">✓</span>':''});render()};sw.appendChild(e)});
+document.getElementById('shapeTabs').addEventListener('click',e=>{const t=e.target.closest('.stab');if(!t)return;shape=t.dataset.shape;[...t.parentNode.children].forEach(c=>c.classList.toggle('on',c===t));render()});
+render();
+</script>
+</body>
+</html>
